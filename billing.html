@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Billing - PostPilot</title>
+  <script src="https://js.stripe.com/v3/"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --darker: #0f0f1e;
+      --dark: #1a1a2e;
+      --text: #e4e4e7;
+      --text-muted: #a1a1aa;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.1);
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--darker);
+      color: var(--text);
+      line-height: 1.6;
+    }
+
+    .topbar {
+      background: var(--dark);
+      border-bottom: 1px solid var(--border);
+      padding: 0 24px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 900;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 48px auto;
+      padding: 0 20px;
+    }
+
+    .page-header {
+      margin-bottom: 32px;
+    }
+
+    .page-header h1 {
+      font-size: 32px;
+      font-weight: 900;
+      margin-bottom: 8px;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px;
+      margin-bottom: 24px;
+    }
+
+    .card h2 {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 16px;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 140px 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .info-label {
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .info-value {
+      font-weight: 600;
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .status-badge.active {
+      background: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+
+    .status-badge.trial {
+      background: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+    }
+
+    .btn {
+      padding: 12px 24px;
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    }
+
+    .btn-danger:hover {
+      box-shadow: 0 10px 30px rgba(239, 68, 68, 0.4);
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 2px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--text);
+      box-shadow: none;
+    }
+
+    .pricing-plans {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 24px;
+    }
+
+    .plan-card {
+      background: rgba(255, 255, 255, 0.03);
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+    }
+
+    .plan-card.current {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .plan-card h3 {
+      font-size: 18px;
+      margin-bottom: 8px;
+    }
+
+    .plan-card .price {
+      font-size: 36px;
+      font-weight: 900;
+      margin-bottom: 16px;
+    }
+
+    .plan-card .price span {
+      font-size: 16px;
+      color: var(--text-muted);
+    }
+
+    @media (max-width: 768px) {
+      .pricing-plans {
+        grid-template-columns: 1fr;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="logo">PostPilot</div>
+    <a href="dashboard.html" class="btn-ghost" style="padding: 8px 16px; font-size: 14px;">← Back to Dashboard</a>
+  </div>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Billing & Subscription</h1>
+      <p>Manage your subscription and payment details</p>
+    </div>
+
+    <!-- Current Plan -->
+    <div class="card">
+      <h2>Current Plan</h2>
+      <div class="info-grid">
+        <div class="info-label">Status:</div>
+        <div class="info-value"><span class="status-badge trial" id="planStatus">Trial</span></div>
+
+        <div class="info-label">Plan:</div>
+        <div class="info-value" id="planName">Starter - $29/month</div>
+
+        <div class="info-label">Trial Ends:</div>
+        <div class="info-value" id="trialEnd">-</div>
+
+        <div class="info-label">Next Billing:</div>
+        <div class="info-value" id="nextBilling">-</div>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 8px;">
+        <button class="btn" id="manageSubscriptionBtn">Manage Subscription</button>
+        <button class="btn btn-danger" id="cancelBtn" style="display: none;">Cancel Subscription</button>
+      </div>
+    </div>
+
+    <!-- Upgrade Options -->
+    <div class="card">
+      <h2>Available Plans</h2>
+      <div class="pricing-plans">
+        <div class="plan-card current">
+          <h3>Starter</h3>
+          <div class="price">$29<span>/mo</span></div>
+          <ul style="list-style: none; padding: 0; margin-bottom: 20px;">
+            <li style="padding: 8px 0;">✓ 30 posts per month</li>
+            <li style="padding: 8px 0;">✓ 2 social accounts</li>
+            <li style="padding: 8px 0;">✓ All tones & styles</li>
+            <li style="padding: 8px 0;">✓ Email support</li>
+          </ul>
+          <button class="btn-ghost" style="width: 100%; padding: 12px;" disabled>Current Plan</button>
+        </div>
+
+        <div class="plan-card">
+          <h3>Pro</h3>
+          <div class="price">$79<span>/mo</span></div>
+          <ul style="list-style: none; padding: 0; margin-bottom: 20px;">
+            <li style="padding: 8px 0;">✓ Unlimited posts</li>
+            <li style="padding: 8px 0;">✓ 5 social accounts</li>
+            <li style="padding: 8px 0;">✓ Auto-scheduling</li>
+            <li style="padding: 8px 0;">✓ Priority support</li>
+          </ul>
+          <button class="btn-ghost" style="width: 100%; padding: 12px;" disabled>Coming Soon</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check user auth
+    const user = JSON.parse(localStorage.getItem('postpilot_user') || 'null');
+    if (!user) {
+      window.location.href = 'login.html';
+    }
+
+    // Calculate trial end date
+    if (user.trialStartDate) {
+      const trialStart = new Date(user.trialStartDate);
+      const trialEnd = new Date(trialStart);
+      trialEnd.setDate(trialEnd.getDate() + 7);
+      
+      document.getElementById('trialEnd').textContent = trialEnd.toLocaleDateString();
+      document.getElementById('nextBilling').textContent = trialEnd.toLocaleDateString();
+    }
+
+    // Stripe Customer Portal (for managing subscriptions)
+    document.getElementById('manageSubscriptionBtn').addEventListener('click', async () => {
+      // TODO: Create customer portal session
+      alert('Customer portal will open here. This requires backend integration.');
+    });
+
+    // Cancel subscription
+    document.getElementById('cancelBtn').addEventListener('click', async () => {
+      if (confirm('Are you sure you want to cancel your subscription? You will lose access at the end of your billing period.')) {
+        // TODO: Cancel subscription via API
+        alert('Cancellation flow will be implemented here.');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+# Environment variables (API keys)
+.env
+.env.local
+.env.production
+
+# Node modules (if we add them later)
+node_modules/
+
+# Netlify
+.netlify/
+
+# Local development
+*.log
+.DS_Store

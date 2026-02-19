@@ -1,0 +1,14 @@
+{
+  "name": "postpilot",
+  "version": "1.0.0",
+  "description": "AI-powered social media content generator",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"No tests yet\""
+  },
+  "dependencies": {
+    "stripe": "^14.0.0"
+  },
+  "author": "PostPilot",
+  "license": "MIT"
+}
