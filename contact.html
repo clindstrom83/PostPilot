@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact Us - PostPilot</title>
+  <meta name="description" content="Get in touch with PostPilot support. We're here to help.">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --dark: #1a1a2e;
+      --darker: #0f0f1e;
+      --text: #e4e4e7;
+      --text-muted: #a1a1aa;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.1);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--darker);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: var(--darker);
+    }
+
+    .bg-animated::before,
+    .bg-animated::after {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .bg-animated::before {
+      background: var(--gradient-primary);
+      top: -200px;
+      right: -200px;
+      animation-delay: 0s;
+    }
+
+    .bg-animated::after {
+      background: var(--gradient-accent);
+      bottom: -200px;
+      left: -200px;
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(50px, 50px) scale(1.1); }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      padding: 20px 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border: none;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-ghost {
+      background: transparent;
+      border: 2px solid var(--border);
+      color: var(--text);
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--text);
+      transform: translateY(-2px);
+    }
+
+    .btn-gradient {
+      background: var(--gradient-primary);
+      color: white;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-gradient:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+    }
+
+    /* Contact Hero */
+    .contact-hero {
+      padding: 80px 0 60px;
+      text-align: center;
+    }
+
+    .contact-hero h1 {
+      font-size: 56px;
+      font-weight: 900;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff 0%, #a78bfa 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .contact-hero p {
+      font-size: 20px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Contact Grid */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+      margin-top: 60px;
+      margin-bottom: 80px;
+    }
+
+    .contact-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px;
+      backdrop-filter: blur(10px);
+    }
+
+    .contact-card h2 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 24px;
+    }
+
+    /* Contact Form */
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--text-muted);
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 16px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group textarea {
+      min-height: 150px;
+      resize: vertical;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 18px;
+      font-size: 16px;
+      margin-top: 8px;
+    }
+
+    /* Contact Info */
+    .contact-info-list {
+      list-style: none;
+      margin-top: 32px;
+    }
+
+    .contact-info-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .contact-info-list li:last-child {
+      border-bottom: none;
+    }
+
+    .contact-icon {
+      width: 48px;
+      height: 48px;
+      background: var(--gradient-primary);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    .contact-info-content h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    .contact-info-content p {
+      color: var(--text-muted);
+      font-size: 15px;
+    }
+
+    .contact-info-content a {
+      color: #667eea;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .contact-info-content a:hover {
+      color: #764ba2;
+    }
+
+    /* FAQ Section */
+    .faq-section {
+      padding: 80px 0;
+      border-top: 1px solid var(--border);
+    }
+
+    .faq-section h2 {
+      font-size: 42px;
+      font-weight: 800;
+      text-align: center;
+      margin-bottom: 60px;
+    }
+
+    .faq-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 32px;
+    }
+
+    .faq-item {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+    }
+
+    .faq-item h3 {
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #667eea;
+    }
+
+    .faq-item p {
+      color: var(--text-muted);
+      line-height: 1.7;
+    }
+
+    /* Success Message */
+    .success-message {
+      display: none;
+      background: var(--gradient-success);
+      padding: 20px;
+      border-radius: 12px;
+      text-align: center;
+      font-weight: 600;
+      margin-top: 20px;
+      animation: slideIn 0.5s ease;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    footer {
+      padding: 60px 0 40px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+
+    footer p {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 968px) {
+      .contact-grid,
+      .faq-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-hero h1 {
+        font-size: 40px;
+      }
+
+      .contact-card {
+        padding: 32px 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <a href="index.html" class="logo">PostPilot</a>
+        <div>
+          <a href="index.html" class="btn btn-ghost">Back to Home</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="contact-hero">
+    <div class="container">
+      <h1>Get In Touch</h1>
+      <p>Have questions? Need help? We're here for you. Reach out and we'll get back to you within 24 hours.</p>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="contact-grid">
+      <!-- Contact Form -->
+      <div class="contact-card">
+        <h2>Send Us a Message</h2>
+        <form id="contactForm">
+          <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required placeholder="Your name">
+          </div>
+
+          <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" required placeholder="your@email.com">
+          </div>
+
+          <div class="form-group">
+            <label for="subject">Subject</label>
+            <select id="subject" name="subject" required>
+              <option value="">Select a topic...</option>
+              <option value="general">General Question</option>
+              <option value="support">Technical Support</option>
+              <option value="billing">Billing & Payments</option>
+              <option value="feature">Feature Request</option>
+              <option value="bug">Report a Bug</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" required placeholder="How can we help you?"></textarea>
+          </div>
+
+          <button type="submit" class="btn btn-gradient submit-btn">Send Message</button>
+          
+          <div id="successMessage" class="success-message">
+            ✓ Message sent! We'll get back to you within 24 hours.
+          </div>
+        </form>
+      </div>
+
+      <!-- Contact Info -->
+      <div class="contact-card">
+        <h2>Contact Information</h2>
+        <p style="color: var(--text-muted); margin-bottom: 24px;">
+          Prefer to reach out directly? Here's how you can contact us:
+        </p>
+
+        <ul class="contact-info-list">
+          <li>
+            <div class="contact-icon">📧</div>
+            <div class="contact-info-content">
+              <h3>Email Support</h3>
+              <p><a href="mailto:support@postpilot.ai">support@postpilot.ai</a></p>
+              <p style="font-size: 13px; margin-top: 4px;">Response within 24 hours</p>
+            </div>
+          </li>
+
+          <li>
+            <div class="contact-icon">💬</div>
+            <div class="contact-info-content">
+              <h3>Live Chat</h3>
+              <p>Available Mon-Fri, 9am-5pm EST</p>
+              <p style="font-size: 13px; margin-top: 4px;">(Coming soon)</p>
+            </div>
+          </li>
+
+          <li>
+            <div class="contact-icon">📱</div>
+            <div class="contact-info-content">
+              <h3>Social Media</h3>
+              <p>
+                <a href="#" style="margin-right: 12px;">Twitter</a>
+                <a href="#" style="margin-right: 12px;">Instagram</a>
+                <a href="#">LinkedIn</a>
+              </p>
+              <p style="font-size: 13px; margin-top: 4px;">(Links coming soon)</p>
+            </div>
+          </li>
+
+          <li>
+            <div class="contact-icon">📚</div>
+            <div class="contact-info-content">
+              <h3>Help Center</h3>
+              <p><a href="#">Browse our documentation</a></p>
+              <p style="font-size: 13px; margin-top: 4px;">(Coming soon)</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq-section">
+    <div class="container">
+      <h2>Frequently Asked Questions</h2>
+      
+      <div class="faq-grid">
+        <div class="faq-item">
+          <h3>How does the 7-day free trial work?</h3>
+          <p>Sign up with your email and credit card. You won't be charged for 7 days. Cancel anytime during the trial and you pay nothing.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Can I cancel my subscription?</h3>
+          <p>Absolutely. Cancel anytime from your account settings. No questions asked, no hidden fees.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>How many posts can I generate?</h3>
+          <p>Starter plan: 30 posts per month. Pro plan (coming soon): unlimited posts.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>What social media platforms do you support?</h3>
+          <p>Currently: Instagram, Facebook, Twitter/X, LinkedIn. More platforms coming soon!</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Can I edit the AI-generated posts?</h3>
+          <p>Yes! Every post can be edited and customized before you use it. The AI gives you a starting point.</p>
+        </div>
+
+        <div class="faq-item">
+          <h3>Do you offer refunds?</h3>
+          <p>If you're not satisfied within the first 30 days, we'll refund your money. No hassle.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2026 PostPilot. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Contact form handler (placeholder - will need backend)
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData);
+      
+      // TODO: Send to backend/email service
+      console.log('Contact form submitted:', data);
+      
+      // Show success message
+      document.getElementById('successMessage').classList.add('show');
+      
+      // Reset form
+      e.target.reset();
+      
+      // Hide success message after 5 seconds
+      setTimeout(() => {
+        document.getElementById('successMessage').classList.remove('show');
+      }, 5000);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Log In - PostPilot</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --darker: #0f0f1e;
+      --text: #e4e4e7;
+      --text-muted: #a1a1aa;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.1);
+      --error: #ef4444;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--darker);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: var(--darker);
+    }
+
+    .bg-animated::before,
+    .bg-animated::after {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .bg-animated::before {
+      background: var(--gradient-primary);
+      top: -200px;
+      right: -200px;
+    }
+
+    .bg-animated::after {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      bottom: -200px;
+      left: -200px;
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(50px, 50px) scale(1.1); }
+    }
+
+    .login-container {
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .logo-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: 900;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .logo-tagline {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .login-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      font-size: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group input.error {
+      border-color: var(--error);
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .form-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      font-size: 14px;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .remember-me input {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .forgot-password {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .signup-link {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .signup-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 540px) {
+      .login-card {
+        padding: 32px 24px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+
+      .form-options {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <div class="login-container">
+    <div class="logo-section">
+      <a href="index.html" class="logo">PostPilot</a>
+      <div class="logo-tagline">AI-powered social media content</div>
+    </div>
+
+    <div class="login-card">
+      <h1>Welcome Back</h1>
+      <p class="subtitle">Log in to your account</p>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required placeholder="you@example.com" autocomplete="email">
+          <div class="error-message" id="emailError">Please enter a valid email</div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required placeholder="Enter your password" autocomplete="current-password">
+          <div class="error-message" id="passwordError">Password is required</div>
+        </div>
+
+        <div class="form-options">
+          <label class="remember-me">
+            <input type="checkbox" id="rememberMe" name="rememberMe">
+            <span>Remember me</span>
+          </label>
+          <a href="#" class="forgot-password">Forgot password?</a>
+        </div>
+
+        <div class="error-message show" id="loginError" style="text-align: center; margin-bottom: 16px; display: none;">
+          Invalid email or password
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">
+          Log In
+        </button>
+      </form>
+
+      <div class="signup-link">
+        Don't have an account? <a href="signup.html">Sign up free</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('loginForm');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const submitBtn = document.getElementById('submitBtn');
+    const loginError = document.getElementById('loginError');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Reset errors
+      document.querySelectorAll('.error-message').forEach(el => el.style.display = 'none');
+      document.querySelectorAll('input').forEach(el => el.classList.remove('error'));
+      loginError.style.display = 'none';
+
+      // Validate
+      let isValid = true;
+
+      if (!emailInput.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        document.getElementById('emailError').classList.add('show');
+        emailInput.classList.add('error');
+        isValid = false;
+      }
+
+      if (passwordInput.value.length < 1) {
+        document.getElementById('passwordError').classList.add('show');
+        passwordInput.classList.add('error');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Disable button
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Logging in...';
+
+      const formData = {
+        email: emailInput.value.trim(),
+        password: passwordInput.value
+      };
+
+      try {
+        // TODO: Send to backend API
+        console.log('Login data:', formData);
+
+        // For now, check localStorage (will be replaced with real auth)
+        const storedUser = localStorage.getItem('postpilot_user');
+        
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          if (user.email === formData.email) {
+            // Successful login
+            window.location.href = 'dashboard.html';
+            return;
+          }
+        }
+
+        // Login failed
+        loginError.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Log In';
+
+      } catch (error) {
+        console.error('Login error:', error);
+        loginError.textContent = 'Something went wrong. Please try again.';
+        loginError.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Log In';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - PostPilot</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --darker: #0f0f1e;
+      --text: #e4e4e7;
+      --text-muted: #a1a1aa;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.1);
+      --error: #ef4444;
+      --success: #10b981;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+      background: var(--darker);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: var(--darker);
+    }
+
+    .bg-animated::before,
+    .bg-animated::after {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .bg-animated::before {
+      background: var(--gradient-primary);
+      top: -200px;
+      right: -200px;
+    }
+
+    .bg-animated::after {
+      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      bottom: -200px;
+      left: -200px;
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(50px, 50px) scale(1.1); }
+    }
+
+    .signup-container {
+      max-width: 480px;
+      width: 100%;
+    }
+
+    .logo-section {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .logo {
+      font-size: 32px;
+      font-weight: 900;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
+    .logo-tagline {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .signup-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 48px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 32px;
+      font-size: 15px;
+    }
+
+    .form-group {
+      margin-bottom: 24px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 8px;
+      font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+      width: 100%;
+      padding: 14px 16px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      color: var(--text);
+      font-size: 15px;
+      transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .form-group input.error {
+      border-color: var(--error);
+    }
+
+    .error-message {
+      color: var(--error);
+      font-size: 13px;
+      margin-top: 6px;
+      display: none;
+    }
+
+    .error-message.show {
+      display: block;
+    }
+
+    .password-strength {
+      margin-top: 8px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .password-strength-bar {
+      height: 100%;
+      width: 0%;
+      transition: all 0.3s ease;
+      border-radius: 2px;
+    }
+
+    .password-strength-bar.weak {
+      width: 33%;
+      background: var(--error);
+    }
+
+    .password-strength-bar.medium {
+      width: 66%;
+      background: #f59e0b;
+    }
+
+    .password-strength-bar.strong {
+      width: 100%;
+      background: var(--success);
+    }
+
+    .password-hint {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 16px;
+      background: var(--gradient-primary);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 24px 0;
+      color: var(--text-muted);
+      font-size: 14px;
+      position: relative;
+    }
+
+    .divider::before,
+    .divider::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      width: 40%;
+      height: 1px;
+      background: var(--border);
+    }
+
+    .divider::before {
+      left: 0;
+    }
+
+    .divider::after {
+      right: 0;
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    .login-link a {
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    .terms-notice {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-muted);
+      text-align: center;
+      line-height: 1.6;
+    }
+
+    .terms-notice a {
+      color: #667eea;
+      text-decoration: none;
+    }
+
+    .terms-notice a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 540px) {
+      .signup-card {
+        padding: 32px 24px;
+      }
+
+      h1 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <div class="signup-container">
+    <div class="logo-section">
+      <a href="index.html" class="logo">PostPilot</a>
+      <div class="logo-tagline">AI-powered social media content</div>
+    </div>
+
+    <div class="signup-card">
+      <h1>Create Your Account</h1>
+      <p class="subtitle">Start your 7-day free trial</p>
+
+      <form id="signupForm">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input type="text" id="name" name="name" required placeholder="John Doe">
+          <div class="error-message" id="nameError">Please enter your name</div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required placeholder="you@example.com">
+          <div class="error-message" id="emailError">Please enter a valid email</div>
+        </div>
+
+        <div class="form-group">
+          <label for="businessType">Business Type</label>
+          <select id="businessType" name="businessType" required>
+            <option value="">Select your business...</option>
+            <option value="gym">Gym / Fitness Center</option>
+            <option value="restaurant">Restaurant / Cafe</option>
+            <option value="salon">Hair Salon / Barber</option>
+            <option value="realtor">Real Estate Agent</option>
+            <option value="coach">Life Coach / Business Coach</option>
+            <option value="photographer">Photographer</option>
+            <option value="lawyer">Law Firm / Attorney</option>
+            <option value="dentist">Dentist / Dental Office</option>
+            <option value="plumber">Plumber / HVAC</option>
+            <option value="boutique">Boutique / Retail Store</option>
+            <option value="consultant">Consultant</option>
+            <option value="agency">Marketing Agency</option>
+            <option value="freelancer">Freelancer</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required placeholder="Min. 8 characters">
+          <div class="password-strength">
+            <div class="password-strength-bar" id="strengthBar"></div>
+          </div>
+          <div class="password-hint">Use 8+ characters with letters, numbers & symbols</div>
+          <div class="error-message" id="passwordError">Password must be at least 8 characters</div>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn">
+          Start Free Trial
+        </button>
+
+        <div class="terms-notice">
+          By signing up, you agree to our 
+          <a href="terms.html">Terms of Service</a> and 
+          <a href="privacy.html">Privacy Policy</a>
+        </div>
+      </form>
+
+      <div class="login-link">
+        Already have an account? <a href="login.html">Log in</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Password strength checker
+    const passwordInput = document.getElementById('password');
+    const strengthBar = document.getElementById('strengthBar');
+
+    passwordInput.addEventListener('input', () => {
+      const password = passwordInput.value;
+      let strength = 0;
+
+      if (password.length >= 8) strength++;
+      if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+      if (password.match(/[0-9]/)) strength++;
+      if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+      strengthBar.className = 'password-strength-bar';
+      if (strength === 1 || strength === 2) {
+        strengthBar.classList.add('weak');
+      } else if (strength === 3) {
+        strengthBar.classList.add('medium');
+      } else if (strength === 4) {
+        strengthBar.classList.add('strong');
+      }
+    });
+
+    // Form validation
+    const form = document.getElementById('signupForm');
+    const nameInput = document.getElementById('name');
+    const emailInput = document.getElementById('email');
+    const businessTypeInput = document.getElementById('businessType');
+    const submitBtn = document.getElementById('submitBtn');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Reset errors
+      document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
+      document.querySelectorAll('input, select').forEach(el => el.classList.remove('error'));
+
+      // Validate
+      let isValid = true;
+
+      if (!nameInput.value.trim()) {
+        document.getElementById('nameError').classList.add('show');
+        nameInput.classList.add('error');
+        isValid = false;
+      }
+
+      if (!emailInput.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+        document.getElementById('emailError').classList.add('show');
+        emailInput.classList.add('error');
+        isValid = false;
+      }
+
+      if (passwordInput.value.length < 8) {
+        document.getElementById('passwordError').classList.add('show');
+        passwordInput.classList.add('error');
+        isValid = false;
+      }
+
+      if (!isValid) return;
+
+      // Disable button
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Creating account...';
+
+      // Get form data
+      const formData = {
+        name: nameInput.value.trim(),
+        email: emailInput.value.trim(),
+        businessType: businessTypeInput.value,
+        password: passwordInput.value
+      };
+
+      try {
+        // TODO: Send to backend API
+        console.log('Signup data:', formData);
+
+        // For now, store in localStorage (will be replaced with real auth)
+        localStorage.setItem('postpilot_user', JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          businessType: formData.businessType,
+          trialStartDate: new Date().toISOString(),
+          plan: 'trial'
+        }));
+
+        // Redirect to dashboard
+        window.location.href = 'dashboard.html';
+      } catch (error) {
+        console.error('Signup error:', error);
+        alert('Something went wrong. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Start Free Trial';
+      }
+    });
+  </script>
+</body>
+</html>
