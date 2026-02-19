@@ -1,15 +1,28 @@
 {
   "name": "postpilot",
   "version": "1.0.0",
-  "description": "AI-powered social media content generator",
+  "description": "AI-powered social media content generator for small businesses",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"No tests yet\""
+    "dev": "netlify dev",
+    "build": "echo 'No build step needed - static site'",
+    "deploy": "netlify deploy --prod"
   },
-  "dependencies": {
-    "stripe": "^14.0.0",
-    "openai": "^4.20.0"
-  },
+  "keywords": [
+    "ai",
+    "social-media",
+    "content-generation",
+    "saas",
+    "openai"
+  ],
   "author": "PostPilot",
-  "license": "MIT"
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "openai": "^4.28.0",
+    "stripe": "^14.14.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
 }

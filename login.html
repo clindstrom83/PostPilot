@@ -347,26 +347,35 @@
         // TODO: Send to backend API
         console.log('Login data:', formData);
 
-        // For now, check localStorage (will be replaced with real auth)
-        const storedUser = localStorage.getItem('postpilot_user');
-        
-        if (storedUser) {
-          const user = JSON.parse(storedUser);
-          if (user.email === formData.email) {
-            // Successful login
-            window.location.href = 'dashboard.html';
-            return;
-          }
+        // Call backend login API
+        const response = await fetch('/.netlify/functions/auth-login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+            rememberMe: formData.rememberMe
+          })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Login failed');
         }
 
-        // Login failed
-        loginError.style.display = 'block';
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Log In';
+        // Store session token
+        localStorage.setItem('postpilot_session', data.session.data);
+        localStorage.setItem('postpilot_user', JSON.stringify(data.user));
+
+        // Redirect to dashboard
+        window.location.href = 'dashboard.html';
 
       } catch (error) {
         console.error('Login error:', error);
-        loginError.textContent = 'Something went wrong. Please try again.';
+        loginError.textContent = error.message || 'Invalid email or password';
         loginError.style.display = 'block';
         submitBtn.disabled = false;
         submitBtn.textContent = 'Log In';

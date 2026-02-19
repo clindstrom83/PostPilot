@@ -446,23 +446,34 @@
       };
 
       try {
-        // TODO: Send to backend API
-        console.log('Signup data:', formData);
+        // Call backend signup API
+        const response = await fetch('/.netlify/functions/auth-signup', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            password: formData.password,
+            businessName: formData.businessType
+          })
+        });
 
-        // For now, store in localStorage (will be replaced with real auth)
-        localStorage.setItem('postpilot_user', JSON.stringify({
-          name: formData.name,
-          email: formData.email,
-          businessType: formData.businessType,
-          trialStartDate: new Date().toISOString(),
-          plan: 'trial'
-        }));
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || 'Signup failed');
+        }
+
+        // Store session token
+        localStorage.setItem('postpilot_session', data.session.data);
+        localStorage.setItem('postpilot_user', JSON.stringify(data.user));
 
         // Redirect to dashboard
         window.location.href = 'dashboard.html';
       } catch (error) {
         console.error('Signup error:', error);
-        alert('Something went wrong. Please try again.');
+        alert(error.message || 'Something went wrong. Please try again.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Start Free Trial';
       }

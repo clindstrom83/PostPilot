@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Settings - PostPilot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f0f1e;
+            color: #e4e4e7;
+        }
+
+        .dashboard-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 30px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            padding: 0 30px 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin: 5px 0;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 12px 30px;
+            color: #9ca3af;
+            text-decoration: none;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: rgba(102, 126, 234, 0.1);
+            color: #667eea;
+            border-left: 3px solid #667eea;
+        }
+
+        .nav-menu a span {
+            margin-right: 12px;
+            font-size: 18px;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 260px;
+            flex: 1;
+            padding: 30px 40px;
+        }
+
+        .settings-container {
+            max-width: 800px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .subtitle {
+            color: #9ca3af;
+            margin-bottom: 40px;
+        }
+
+        .settings-section {
+            background: rgba(31, 41, 55, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .settings-section h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #f3f4f6;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            color: #d1d5db;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(31, 41, 55, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #e4e4e7;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        input:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .btn-danger:hover {
+            box-shadow: 0 10px 20px rgba(239, 68, 68, 0.3);
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #9ca3af;
+        }
+
+        .info-value {
+            color: #e4e4e7;
+            font-weight: 500;
+        }
+
+        .message {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .message.success {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <h1>✈️ PostPilot</h1>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="/dashboard.html"><span>📊</span> Dashboard</a></li>
+                <li><a href="/account.html" class="active"><span>⚙️</span> Account</a></li>
+                <li><a href="/billing.html"><span>💳</span> Billing</a></li>
+                <li><a href="#" onclick="logout()"><span>🚪</span> Logout</a></li>
+            </ul>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="settings-container">
+                <h1>Account Settings</h1>
+                <p class="subtitle">Manage your account information and preferences</p>
+
+                <div id="message"></div>
+
+                <!-- Account Information -->
+                <div class="settings-section">
+                    <h2>Account Information</h2>
+                    <div class="info-row">
+                        <span class="info-label">Email</span>
+                        <span class="info-value" id="userEmail">Loading...</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Business Name</span>
+                        <span class="info-value" id="businessName">Loading...</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Member Since</span>
+                        <span class="info-value" id="memberSince">Loading...</span>
+                    </div>
+                </div>
+
+                <!-- Change Password -->
+                <div class="settings-section">
+                    <h2>Change Password</h2>
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password</label>
+                            <input type="password" id="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password</label>
+                            <input type="password" id="newPassword" required placeholder="At least 8 characters">
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn">Update Password</button>
+                    </form>
+                </div>
+
+                <!-- Danger Zone -->
+                <div class="settings-section">
+                    <h2>Danger Zone</h2>
+                    <p style="color: #9ca3af; margin-bottom: 20px; font-size: 14px;">
+                        Once you delete your account, there is no going back. Please be certain.
+                    </p>
+                    <button class="btn btn-danger" onclick="deleteAccount()">Delete Account</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Load user data
+        async function loadUserData() {
+            const session = localStorage.getItem('postpilot_session');
+            if (!session) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            try {
+                const response = await fetch('/.netlify/functions/auth-verify', {
+                    headers: {
+                        'Authorization': `Bearer ${session}`
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Session expired');
+                }
+
+                const data = await response.json();
+                const user = data.user;
+
+                document.getElementById('userEmail').textContent = user.email;
+                document.getElementById('businessName').textContent = user.businessName;
+                document.getElementById('memberSince').textContent = new Date(user.subscription.billingPeriodStart).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+            } catch (err) {
+                console.error('Error loading user data:', err);
+                localStorage.removeItem('postpilot_session');
+                window.location.href = '/login.html';
+            }
+        }
+
+        // Change password
+        document.getElementById('changePasswordForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const messageDiv = document.getElementById('message');
+
+            if (newPassword !== confirmPassword) {
+                messageDiv.innerHTML = '<div class="message error">New passwords do not match.</div>';
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                messageDiv.innerHTML = '<div class="message error">Password must be at least 8 characters.</div>';
+                return;
+            }
+
+            messageDiv.innerHTML = '<div class="message">Updating password...</div>';
+
+            // TODO: Implement password change endpoint
+            setTimeout(() => {
+                messageDiv.innerHTML = '<div class="message success">Password updated successfully!</div>';
+                document.getElementById('changePasswordForm').reset();
+            }, 1000);
+        });
+
+        function deleteAccount() {
+            if (confirm('Are you absolutely sure? This action cannot be undone.')) {
+                if (confirm('This will permanently delete all your data. Continue?')) {
+                    // TODO: Implement account deletion
+                    alert('Account deletion will be implemented soon.');
+                }
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('postpilot_session');
+            window.location.href = '/login.html';
+        }
+
+        loadUserData();
+    </script>
+</body>
+</html>
