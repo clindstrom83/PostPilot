@@ -554,40 +554,63 @@
       // Show loading
       loadingOverlay.classList.add('show');
 
-      // Simulate API call (will be replaced with OpenAI)
-      await new Promise(resolve => setTimeout(resolve, 10000));
+      try {
+        // Call OpenAI generation API
+        const response = await fetch('/.netlify/functions/generate-posts', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            businessType,
+            tone,
+            count: 30
+          })
+        });
 
-      // Generate 30 posts
-      const posts = [];
-      for (let i = 0; i < 30; i++) {
-        posts.push({
-          id: Date.now() + i,
-          content: `Sample post ${i + 1} for ${businessType} with ${tone} tone. This will be replaced with real AI-generated content.`,
+        if (!response.ok) {
+          throw new Error('Failed to generate posts');
+        }
+
+        const data = await response.json();
+        
+        // Format posts for display
+        const posts = data.posts.map((content, index) => ({
+          id: Date.now() + index,
+          content,
           businessType,
           tone
-        });
+        }));
+
+        // Hide loading
+        loadingOverlay.classList.remove('show');
+
+        // Display posts
+        displayPosts(posts);
+
+        // Update stats
+        document.getElementById('postsGenerated').textContent = posts.length;
+
+        // Save to localStorage
+        localStorage.setItem('postpilot_last_posts', JSON.stringify(posts));
+
+      } catch (error) {
+        console.error('Generation error:', error);
+        loadingOverlay.classList.remove('show');
+        alert('Failed to generate posts. Please try again.');
       }
-
-      // Hide loading
-      loadingOverlay.classList.remove('show');
-
-      // Display posts
-      displayPosts(posts);
-
-      // Update stats
-      document.getElementById('postsGenerated').textContent = posts.length;
     });
 
+    let currentPosts = [];
+
     function displayPosts(posts) {
+      currentPosts = posts;
       const html = `
         <div class="posts-grid">
           ${posts.map((post, index) => `
-            <div class="post-card">
+            <div class="post-card" data-index="${index}">
               <div class="post-number">Post ${index + 1}</div>
-              <div class="post-content">${post.content}</div>
+              <div class="post-content">${escapeHtml(post.content)}</div>
               <div class="post-actions">
                 <button onclick="copyPost(${index})">Copy</button>
-                <button>Edit</button>
               </div>
             </div>
           `).join('')}
@@ -596,9 +619,36 @@
       postsContainer.innerHTML = html;
     }
 
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
     function copyPost(index) {
-      // TODO: Implement copy functionality
-      alert('Post copied!');
+      const post = currentPosts[index];
+      if (!post) return;
+
+      navigator.clipboard.writeText(post.content).then(() => {
+        // Visual feedback
+        const postCard = document.querySelector(`[data-index="${index}"]`);
+        const btn = postCard.querySelector('button');
+        const originalText = btn.textContent;
+        btn.textContent = 'Copied!';
+        btn.style.background = 'rgba(16, 185, 129, 0.2)';
+        btn.style.borderColor = '#10b981';
+        btn.style.color = '#10b981';
+        
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.background = '';
+          btn.style.borderColor = '';
+          btn.style.color = '';
+        }, 2000);
+      }).catch(err => {
+        console.error('Copy failed:', err);
+        alert('Failed to copy. Please try again.');
+      });
     }
 
     // Logout handler
