@@ -46,8 +46,8 @@ exports.handler = async (event, context) => {
       subscription_data: {
         trial_period_days: 7,
       },
-      success_url: `${process.env.SITE_URL}/dashboard.html?success=true`,
-      cancel_url: `${process.env.SITE_URL}/signup.html?canceled=true`,
+      success_url: `${process.env.SITE_URL || 'https://postpilotweb.netlify.app'}/dashboard.html?success=true`,
+      cancel_url: `${process.env.SITE_URL || 'https://postpilotweb.netlify.app'}/?canceled=true`,
       allow_promotion_codes: true,
     });
 

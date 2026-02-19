@@ -483,7 +483,7 @@
       </h1>
       <p>AI monitors your Google Business Profile 24/7 and generates professional responses to every review in 30 seconds. Approve and post directly from your dashboard.</p>
       <div class="cta-buttons">
-        <a href="/signup.html" class="btn btn-primary">Start Free Trial</a>
+        <button class="btn btn-primary" onclick="startCheckout('starter')">Start Free Trial</button>
         <a href="#demo" class="btn btn-secondary">See Demo</a>
       </div>
       <div class="trust-badges">
@@ -541,7 +541,7 @@
             <li>Email notifications</li>
             <li>Email support</li>
           </ul>
-          <a href="/signup.html" class="btn btn-primary" style="width: 100%;">Start Free Trial</a>
+          <button class="btn btn-primary" onclick="startCheckout('starter')" style="width: 100%;">Start Free Trial</button>
         </div>
 
         <div class="pricing-card">
@@ -557,7 +557,7 @@
             <li>Analytics dashboard</li>
             <li>Priority support</li>
           </ul>
-          <button class="btn btn-secondary" style="width: 100%;" disabled>Coming Soon</button>
+          <button class="btn btn-secondary" onclick="startCheckout('pro')" style="width: 100%;">Start Free Trial</button>
         </div>
       </div>
     </div>
@@ -610,6 +610,46 @@
         }
       } catch (error) {
         outputDiv.innerHTML = '<div class="demo-output"><p>Error: ' + error.message + '</p></div>';
+      }
+    }
+
+    async function startCheckout(plan) {
+      const priceIds = {
+        starter: 'price_1T2h2aRztedIDFZCuu8cd5Nn',
+        pro: 'price_1T2h2kRztedIDFZCEUQ8PUS0'
+      };
+
+      const priceId = priceIds[plan];
+      if (!priceId) {
+        alert('Invalid plan selected');
+        return;
+      }
+
+      // Prompt for email
+      const email = prompt('Enter your email to start your 7-day free trial:');
+      if (!email || !email.includes('@')) {
+        alert('Please enter a valid email address');
+        return;
+      }
+
+      try {
+        // Call create-checkout function
+        const response = await fetch('/.netlify/functions/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, priceId })
+        });
+
+        const data = await response.json();
+
+        if (data.url) {
+          // Redirect to Stripe Checkout
+          window.location.href = data.url;
+        } else {
+          alert('Error starting checkout. Please try again.');
+        }
+      } catch (error) {
+        alert('Error: ' + error.message);
       }
     }
   </script>
