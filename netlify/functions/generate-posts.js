@@ -95,6 +95,14 @@ exports.handler = async (event, context) => {
 };
 
 function getFallbackPosts(businessType, tone, count) {
+  // Return obvious test posts so we know if OpenAI is working
+  const testPosts = [];
+  for (let i = 1; i <= count; i++) {
+    testPosts.push(`🚨 FALLBACK MODE - Post ${i}: OpenAI API not connected. If you see this, AI generation failed.`);
+  }
+  return testPosts;
+  
+  /* OLD FALLBACK CODE - DISABLED FOR TESTING
   const fallbackPosts = {
     gym: [
       "New year, new you starts NOW. Not tomorrow. Not Monday. Today. Let's go! 💪",
@@ -196,6 +204,7 @@ function getFallbackPosts(businessType, tone, count) {
 
   const posts = fallbackPosts[businessType] || fallbackPosts.gym;
   return posts.slice(0, count);
+  */
 }
 
 function buildPrompt(businessType, tone, count) {
