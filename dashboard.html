@@ -551,6 +551,14 @@
       const businessType = document.getElementById('businessTypeSelect').value;
       const tone = document.getElementById('toneSelect').value;
 
+      // Validation
+      if (!businessType || businessType === '') {
+        alert('Please select a business type');
+        return;
+      }
+
+      console.log('Generating posts...', { businessType, tone });
+
       // Show loading
       loadingOverlay.classList.add('show');
 
@@ -567,7 +575,9 @@
         });
 
         if (!response.ok) {
-          throw new Error('Failed to generate posts');
+          const errorData = await response.json();
+          console.error('API Error:', errorData);
+          throw new Error(errorData.error || errorData.message || 'Failed to generate posts');
         }
 
         const data = await response.json();
@@ -595,7 +605,7 @@
       } catch (error) {
         console.error('Generation error:', error);
         loadingOverlay.classList.remove('show');
-        alert('Failed to generate posts. Please try again.');
+        alert('Error: ' + error.message + '\n\nCheck console for details (F12).');
       }
     });
 
