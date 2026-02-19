@@ -521,13 +521,14 @@
     }
 
     // Display user info
-    document.getElementById('userAvatar').textContent = user.name.charAt(0).toUpperCase();
-    document.getElementById('businessType').textContent = user.businessType || '-';
+    const userName = user.businessName || user.email || 'User';
+    document.getElementById('userAvatar').textContent = userName.charAt(0).toUpperCase();
+    document.getElementById('businessType').textContent = user.businessName || '-';
 
     // Calculate trial days left
-    const trialStart = new Date(user.trialStartDate);
+    const trialEnds = new Date(user.subscription.trialEndsAt);
     const now = new Date();
-    const daysLeft = 7 - Math.floor((now - trialStart) / (1000 * 60 * 60 * 24));
+    const daysLeft = Math.ceil((trialEnds - now) / (1000 * 60 * 60 * 24));
     document.querySelector('.trial-badge').textContent = `${daysLeft} days left in trial`;
 
     // Generate form handler
