@@ -440,19 +440,35 @@
           throw new Error(data.error || 'Signup failed');
         }
 
-        // Store session token
-        localStorage.setItem('postpilot_session', data.session); // Already just the token string
+        // Store session token and password temporarily
+        localStorage.setItem('postpilot_session', data.session);
         localStorage.setItem('postpilot_user', JSON.stringify(data.user));
-        localStorage.setItem('postpilot_password', data.password); // Store password for user reference
+        localStorage.setItem('postpilot_password', data.password);
+        localStorage.setItem('postpilot_pending_checkout', 'true');
 
-        // Show password modal
-        showModal(
-          '✅ Account Created!',
-          `Your password is: ${data.password}\n\nSave this somewhere safe - you'll need it to log in!`,
-          '🔑',
-          'Go to Dashboard',
-          () => { window.location.href = 'dashboard.html'; }
-        );
+        // Create Stripe Checkout session
+        submitBtn.textContent = 'Redirecting to payment...';
+        
+        const checkoutResponse = await fetch('/.netlify/functions/create-checkout', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            email: formData.email,
+            plan: 'starter' // Default to starter plan
+          })
+        });
+
+        const checkoutData = await checkoutResponse.json();
+
+        if (!checkoutResponse.ok) {
+          throw new Error(checkoutData.error || 'Failed to create checkout session');
+        }
+
+        // Redirect to Stripe Checkout
+        window.location.href = checkoutData.url;
+
       } catch (error) {
         console.error('Signup error:', error);
         showModal('Signup Failed', error.message || 'Something went wrong. Please try again.', '❌', 'OK');

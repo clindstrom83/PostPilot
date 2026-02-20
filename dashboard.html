@@ -381,19 +381,23 @@
         <div class="stat-value">Trial</div>
         <div class="stat-detail">Upgrade for unlimited</div>
       </div>
+      <!-- Google OAuth - Hidden for MVP launch
       <div class="stat-card">
         <div class="stat-label">Integration Status</div>
         <div class="stat-value">⚠️</div>
         <div class="stat-detail">Connect Google Business</div>
       </div>
+      -->
     </div>
 
+    <!-- Google OAuth Alert - Hidden for MVP launch
     <div class="alert alert-warning" id="googleAlert">
       <strong>⚠️ Google Business Profile Not Connected</strong><br>
       Connect your Google Business Profile to enable automatic review monitoring. For now, you can manually paste reviews below.
       <br><br>
       <button class="btn btn-primary" onclick="connectGoogle()" style="margin-top: 12px;">Connect Google Business Profile</button>
     </div>
+    -->
 
     <div class="card">
       <h3>Generate Review Response</h3>
@@ -481,6 +485,22 @@
         return;
       }
 
+      // Check response limit
+      const user = JSON.parse(localStorage.getItem('postpilot_user') || '{}');
+      const responsesUsed = user.subscription?.postsGenerated || 0;
+      const responseLimit = user.subscription?.status === 'trial' ? 15 : 50;
+      
+      if (responsesUsed >= responseLimit) {
+        showModal(
+          '⚠️ Response Limit Reached',
+          `You've used all ${responseLimit} responses in your ${user.subscription?.status === 'trial' ? 'trial' : 'plan'}.\n\nUpgrade to continue generating responses!`,
+          '🚀',
+          'View Plans',
+          () => { window.location.href = '/pricing.html'; }
+        );
+        return;
+      }
+
       outputDiv.innerHTML = '<div class="loading">Generating AI response...</div>';
 
       try {
@@ -507,7 +527,13 @@
             </div>
           `;
 
-          // Update stats
+          // Update stats and localStorage
+          const user = JSON.parse(localStorage.getItem('postpilot_user') || '{}');
+          if (user.subscription) {
+            user.subscription.postsGenerated = (user.subscription.postsGenerated || 0) + 1;
+            localStorage.setItem('postpilot_user', JSON.stringify(user));
+          }
+          
           const currentCount = parseInt(document.getElementById('responsesGenerated').textContent);
           document.getElementById('responsesGenerated').textContent = currentCount + 1;
 
@@ -560,25 +586,39 @@
       window.location.href = '/.netlify/functions/google-oauth-start?userId=' + encodeURIComponent(user.email);
     }
 
-    // Check for Google connection success
+    // Check for first-time signup - show password modal
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.get('google_connected') === 'true') {
-      document.getElementById('googleAlert').innerHTML = `
-        <div class="alert alert-info">
-          <strong>✅ Google Business Profile Connected!</strong><br>
-          Your reviews will now be automatically monitored. New reviews will appear in your dashboard.
-        </div>
-      `;
-    } else if (urlParams.get('google_error')) {
-      const error = urlParams.get('google_error');
-      document.getElementById('googleAlert').innerHTML = `
-        <div class="alert alert-warning">
-          <strong>⚠️ Connection Failed</strong><br>
-          Error: ${error}. Please try again or contact support.
-          <br><br>
-          <button class="btn btn-primary" onclick="connectGoogle()" style="margin-top: 12px;">Retry Connection</button>
-        </div>
-      `;
+    if (urlParams.get('checkout') === 'success' && localStorage.getItem('postpilot_pending_checkout') === 'true') {
+      const password = localStorage.getItem('postpilot_password');
+      localStorage.removeItem('postpilot_pending_checkout');
+      
+      if (password) {
+        showModal(
+          '✅ Welcome to ReviewPilot!',
+          `Your 7-day free trial has started!\n\nYour password is: ${password}\n\nSave this somewhere safe - you'll need it to log in.\n\n💡 You have 15 responses during your trial.`,
+          '🎉',
+          'Got it!',
+          null
+        );
+      }
+    }
+
+    // Update response limit counter (15 during trial, 50 after)
+    const userDataEl = document.getElementById('responsesGenerated');
+    if (userDataEl) {
+      const user = JSON.parse(localStorage.getItem('postpilot_user') || '{}');
+      if (user.subscription && user.subscription.status === 'trial') {
+        // During trial: 15 responses max
+        const responsesUsed = user.subscription.postsGenerated || 0;
+        const responsesLimit = 15;
+        userDataEl.textContent = responsesUsed;
+        
+        // Update limit display
+        const limitEl = document.querySelector('.stat-detail');
+        if (limitEl && limitEl.textContent.includes('of')) {
+          limitEl.textContent = `of ${responsesLimit} trial responses`;
+        }
+      }
     }
   </script>
 </body>

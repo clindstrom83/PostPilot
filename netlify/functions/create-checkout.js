@@ -1,7 +1,7 @@
-// Create Stripe Checkout Session for subscription
+// Create Stripe Checkout Session with Trial
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-exports.handler = async (event, context) => {
+exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -22,33 +22,49 @@ exports.handler = async (event, context) => {
   }
 
   try {
-    const { email, priceId } = JSON.parse(event.body);
+    const { email, plan } = JSON.parse(event.body);
 
-    if (!email || !priceId) {
+    if (!email) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Missing required fields' })
+        body: JSON.stringify({ error: 'Email is required' })
       };
     }
 
-    // Create Stripe Checkout Session
+    // Determine price based on plan (default to Starter)
+    const priceId = plan === 'pro' 
+      ? process.env.STRIPE_PRICE_ID_PRO || 'price_1T2h2kRztedIDFZCEUQ8PUS0'
+      : process.env.STRIPE_PRICE_ID_STARTER || 'price_1T2h2aRztedIDFZCuu8cd5Nn';
+
+    const siteUrl = process.env.SITE_URL || 'https://reviewpilot.business';
+
+    // Create Checkout Session with trial
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
-      customer_email: email,
       line_items: [
         {
           price: priceId,
           quantity: 1,
         },
       ],
+      customer_email: email,
       subscription_data: {
         trial_period_days: 7,
+        trial_settings: {
+          end_behavior: {
+            missing_payment_method: 'cancel',
+          },
+        },
       },
-      success_url: `${process.env.SITE_URL || 'https://postpilotweb.netlify.app'}/dashboard.html?success=true`,
-      cancel_url: `${process.env.SITE_URL || 'https://postpilotweb.netlify.app'}/?canceled=true`,
+      success_url: `${siteUrl}/dashboard.html?checkout=success`,
+      cancel_url: `${siteUrl}/signup.html?checkout=cancelled`,
       allow_promotion_codes: true,
+      billing_address_collection: 'auto',
+      metadata: {
+        email: email,
+      },
     });
 
     return {
@@ -60,12 +76,12 @@ exports.handler = async (event, context) => {
       })
     };
 
-  } catch (error) {
-    console.error('Stripe checkout error:', error);
+  } catch (err) {
+    console.error('Stripe checkout error:', err);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ error: 'Failed to create checkout session: ' + err.message })
     };
   }
 };
