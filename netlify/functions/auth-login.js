@@ -1,11 +1,4 @@
-// Simple Auth Login
-const crypto = require('crypto');
-const { getStore } = require('@netlify/blobs');
-
-function hashPassword(password) {
-  return crypto.createHash('sha256').update(password + 'reviewpilot-salt-2026').digest('hex');
-}
-
+// MVP: Client-side auth - login just validates format
 exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -37,52 +30,18 @@ exports.handler = async (event) => {
       };
     }
 
-    const store = getStore('users');
-    const userKey = `user-${email.toLowerCase()}`;
-    const userData = await store.get(userKey);
-    
-    if (!userData) {
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: 'Invalid email or password' })
-      };
-    }
-
-    const user = JSON.parse(userData);
-    const passwordHash = hashPassword(password);
-    
-    if (passwordHash !== user.passwordHash) {
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: 'Invalid email or password' })
-      };
-    }
-
-    // Create session
+    // MVP: Just return success with mock session
+    // Client will check localStorage for actual auth
+    const crypto = require('crypto');
     const sessionToken = crypto.randomBytes(32).toString('hex');
-    const sessionData = {
-      userId: user.id,
-      email: user.email,
-      createdAt: Date.now(),
-      expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000
-    };
-    
-    await store.set(`session-${sessionToken}`, JSON.stringify(sessionData));
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        user: {
-          id: user.id,
-          email: user.email,
-          businessName: user.businessName,
-          subscription: user.subscription
-        },
-        session: sessionToken
+        session: sessionToken,
+        note: 'MVP: Check localStorage for user data'
       })
     };
 
@@ -92,6 +51,6 @@ exports.handler = async (event) => {
       statusCode: 500,
       headers,
       body: JSON.stringify({ error: 'Internal server error: ' + err.message })
-      };
+    };
   }
 };

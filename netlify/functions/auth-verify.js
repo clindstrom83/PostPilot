@@ -1,6 +1,4 @@
-// Simple Auth Verify
-const { getStore } = require('@netlify/blobs');
-
+// MVP: Client-side auth - verify just checks token exists
 exports.handler = async (event) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
@@ -28,58 +26,18 @@ exports.handler = async (event) => {
       return {
         statusCode: 401,
         headers,
-        body: JSON.stringify({ error: 'Missing or invalid authorization header' })
+        body: JSON.stringify({ error: 'Missing authorization header' })
       };
     }
 
-    const token = authHeader.replace('Bearer ', '');
-    const store = getStore('users');
-    
-    const sessionData = await store.get(`session-${token}`);
-    
-    if (!sessionData) {
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: 'Invalid or expired session' })
-      };
-    }
-
-    const session = JSON.parse(sessionData);
-    
-    // Check expiry
-    if (session.expiresAt < Date.now()) {
-      await store.delete(`session-${token}`);
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: 'Session expired' })
-      };
-    }
-
-    // Get user
-    const userData = await store.get(`user-${session.email}`);
-    if (!userData) {
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: 'User not found' })
-      };
-    }
-
-    const user = JSON.parse(userData);
-
+    // MVP: Just return success
+    // Client localStorage has the real user data
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         valid: true,
-        user: {
-          id: user.id,
-          email: user.email,
-          businessName: user.businessName,
-          subscription: user.subscription
-        }
+        note: 'MVP: User data in localStorage'
       })
     };
 
