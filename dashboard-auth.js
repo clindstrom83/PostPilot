@@ -1,9 +1,11 @@
 // Dashboard Authentication and API Integration
 
-// Check authentication on page load
+// Check authentication on page load (MVP: Client-side only)
 async function checkAuth() {
   const session = localStorage.getItem('postpilot_session');
-  if (!session) {
+  const userJson = localStorage.getItem('postpilot_user');
+  
+  if (!session || !userJson) {
     // Show modal before redirecting
     if (typeof showModal === 'function') {
       showModal(
@@ -20,59 +22,48 @@ async function checkAuth() {
   }
 
   try {
-    const response = await fetch('/.netlify/functions/auth-verify', {
-      headers: {
-        'Authorization': `Bearer ${session}`
-      }
-    });
-
-    if (!response.ok) {
-      throw new Error('Session expired');
-    }
-
-    const data = await response.json();
-    return data.user;
+    // MVP: Just use localStorage data directly, no server verification
+    const user = JSON.parse(userJson);
+    return user;
   } catch (err) {
     console.error('Auth check failed:', err);
     localStorage.removeItem('postpilot_session');
     localStorage.removeItem('postpilot_user');
-    
-    // Show modal before redirecting
-    if (typeof showModal === 'function') {
-      showModal(
-        'Session Expired',
-        'Your session has expired. Please log in again.',
-        '⏱️',
-        'Go to Login',
-        () => { window.location.href = '/login.html'; }
-      );
-    } else {
-      window.location.href = '/login.html';
-    }
+    window.location.href = '/login.html';
     return null;
   }
 }
 
 // Update user UI
 function updateUserUI(user) {
-  // Update stats
-  document.getElementById('postsGenerated').textContent = user.subscription.postsGenerated || 0;
-  document.getElementById('postsLimit').textContent = user.subscription.postsLimit || 30;
+  // Update stats (with safety checks)
+  const postsGenEl = document.getElementById('postsGenerated') || document.getElementById('responsesGenerated');
+  const postsLimitEl = document.getElementById('postsLimit');
   
-  // Update trial status
-  const trialStatus = document.getElementById('trialStatus');
-  if (user.subscription.status === 'trial') {
-    const daysLeft = Math.ceil((new Date(user.subscription.trialEndsAt) - new Date()) / (1000 * 60 * 60 * 24));
-    trialStatus.textContent = `${daysLeft} days left`;
-  } else if (user.subscription.status === 'active') {
-    trialStatus.textContent = 'Active';
-  } else {
-    trialStatus.textContent = 'Expired';
+  if (postsGenEl) {
+    postsGenEl.textContent = (user.subscription && user.subscription.postsGenerated) || 0;
   }
   
-  // Update user email in menu
+  if (postsLimitEl) {
+    postsLimitEl.textContent = (user.subscription && user.subscription.postsLimit) || 50;
+  }
+  
+  // Update trial status if element exists
+  const trialStatus = document.getElementById('trialStatus');
+  if (trialStatus && user.subscription) {
+    if (user.subscription.status === 'trial') {
+      const daysLeft = Math.ceil((new Date(user.subscription.trialEndsAt) - new Date()) / (1000 * 60 * 60 * 24));
+      trialStatus.textContent = `${daysLeft} days left`;
+    } else if (user.subscription.status === 'active') {
+      trialStatus.textContent = 'Active';
+    } else {
+      trialStatus.textContent = 'Expired';
+    }
+  }
+  
+  // Update user email in menu if it exists
   const userEmail = document.querySelector('.user-email');
-  if (userEmail) {
+  if (userEmail && user.email) {
     userEmail.textContent = user.email;
   }
 }

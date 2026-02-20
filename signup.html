@@ -441,8 +441,9 @@
         }
 
         // Store session token
-        localStorage.setItem('postpilot_session', data.session);
+        localStorage.setItem('postpilot_session', data.session); // Already just the token string
         localStorage.setItem('postpilot_user', JSON.stringify(data.user));
+        localStorage.setItem('postpilot_password', data.password); // Store password for user reference
 
         // Show password modal
         showModal(

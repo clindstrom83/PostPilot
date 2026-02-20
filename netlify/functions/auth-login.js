@@ -30,18 +30,31 @@ exports.handler = async (event) => {
       };
     }
 
-    // MVP: Just return success with mock session
-    // Client will check localStorage for actual auth
+    // MVP: Return session in format the frontend expects
     const crypto = require('crypto');
     const sessionToken = crypto.randomBytes(32).toString('hex');
+
+    // Mock user data - frontend will use its localStorage
+    const user = {
+      id: crypto.randomUUID(),
+      email: email.toLowerCase(),
+      businessName: 'Your Business',
+      subscription: {
+        status: 'trial',
+        plan: 'starter',
+        trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        postsGenerated: 0,
+        postsLimit: 50
+      }
+    };
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({
         success: true,
-        session: sessionToken,
-        note: 'MVP: Check localStorage for user data'
+        session: { token: sessionToken },
+        user: user
       })
     };
 
