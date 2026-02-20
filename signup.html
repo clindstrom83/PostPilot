@@ -296,6 +296,17 @@
         font-size: 24px;
       }
     }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
   </style>
 </head>
 <body>
@@ -446,16 +457,170 @@
         localStorage.setItem('postpilot_password', data.password);
         localStorage.setItem('postpilot_pending_checkout', 'true');
 
-        // Create Stripe Checkout session
-        submitBtn.textContent = 'Redirecting to payment...';
-        
+        // Show password modal FIRST
+        submitBtn.textContent = 'Account created!';
+        showPasswordModal(data.password, formData.email);
+
+      } catch (error) {
+        console.error('Signup error:', error);
+        showModal('Signup Failed', error.message || 'Something went wrong. Please try again.', '❌', 'OK');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Start Free Trial';
+      }
+    });
+
+    // Show password modal, then redirect to checkout
+    async function showPasswordModal(password, email) {
+      // Create modal
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(8px);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      `;
+
+      modal.innerHTML = `
+        <div style="
+          background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+          border: 2px solid rgba(102, 126, 234, 0.3);
+          border-radius: 24px;
+          padding: 48px;
+          max-width: 520px;
+          width: 100%;
+          box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
+          animation: slideUp 0.4s ease;
+        ">
+          <div style="text-align: center; margin-bottom: 24px;">
+            <div style="
+              width: 80px;
+              height: 80px;
+              margin: 0 auto 20px;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              font-size: 40px;
+              box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
+            ">
+              🔑
+            </div>
+            <h2 style="
+              font-size: 28px;
+              font-weight: 800;
+              color: #fff;
+              margin-bottom: 12px;
+            ">Save Your Password!</h2>
+            <p style="
+              color: #a1a1aa;
+              font-size: 15px;
+              line-height: 1.6;
+            ">Your account has been created. Copy this password now - you won't see it again!</p>
+          </div>
+
+          <div style="
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 24px;
+          ">
+            <div style="color: #a1a1aa; font-size: 13px; font-weight: 600; margin-bottom: 8px;">YOUR PASSWORD:</div>
+            <div style="
+              font-size: 24px;
+              font-weight: 700;
+              color: #fff;
+              letter-spacing: 2px;
+              user-select: all;
+              word-break: break-all;
+              margin-bottom: 12px;
+            " id="passwordDisplay">${password}</div>
+            <button onclick="copyPassword('${password}')" style="
+              width: 100%;
+              padding: 12px;
+              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+              color: white;
+              border: none;
+              border-radius: 10px;
+              font-weight: 700;
+              cursor: pointer;
+              transition: all 0.3s ease;
+            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+              📋 Copy Password
+            </button>
+          </div>
+
+          <div style="
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+          ">
+            <div style="color: #ef4444; font-weight: 700; margin-bottom: 8px;">⚠️ Important:</div>
+            <div style="color: #fca5a5; font-size: 14px; line-height: 1.6;">
+              Save this password in a safe place (password manager, notes app, etc.). You'll need it to log in after completing payment.
+            </div>
+          </div>
+
+          <button onclick="proceedToCheckout('${email}')" style="
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 15px 40px rgba(16, 185, 129, 0.6)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(16, 185, 129, 0.4)'">
+            I've Saved My Password - Continue to Payment →
+          </button>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+    }
+
+    // Copy password function
+    window.copyPassword = function(password) {
+      navigator.clipboard.writeText(password).then(() => {
+        const btn = event.target;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '✅ Copied!';
+        btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+        setTimeout(() => {
+          btn.innerHTML = originalText;
+          btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        }, 2000);
+      });
+    };
+
+    // Proceed to checkout
+    window.proceedToCheckout = async function(email) {
+      const btn = event.target;
+      btn.disabled = true;
+      btn.innerHTML = 'Redirecting to payment...';
+
+      try {
         const checkoutResponse = await fetch('/.netlify/functions/create-checkout', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
-            email: formData.email,
+            email: email,
             plan: 'starter' // Default to starter plan
           })
         });
@@ -470,12 +635,22 @@
         window.location.href = checkoutData.url;
 
       } catch (error) {
-        console.error('Signup error:', error);
-        showModal('Signup Failed', error.message || 'Something went wrong. Please try again.', '❌', 'OK');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Start Free Trial';
+        console.error('Checkout error:', error);
+        alert('Failed to create checkout session. Please try again or contact support.');
+        btn.disabled = false;
+        btn.innerHTML = 'I\'ve Saved My Password - Continue to Payment →';
       }
-    });
+    };
+
+  </script>
+  <script>
+    // Simple modal fallback if custom modal script not loaded
+    if (typeof showModal === 'undefined') {
+      window.showModal = function(title, message, icon, actionText, callback) {
+        alert(`${icon} ${title}\n\n${message}`);
+        if (callback) callback();
+      };
+    }
   </script>
 </body>
 </html>
