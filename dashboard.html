@@ -540,8 +540,10 @@
 
     function connectGoogle() {
       // Get current user ID from session
-      const authToken = localStorage.getItem('auth_token');
-      if (!authToken) {
+      const authToken = localStorage.getItem('postpilot_session');
+      const userData = localStorage.getItem('postpilot_user');
+      
+      if (!authToken || !userData) {
         showModal(
           'Authentication Required',
           'You must be logged in to connect your Google Business Profile. Redirecting to login...',
@@ -552,8 +554,10 @@
         return;
       }
 
-      // Start OAuth flow
-      window.location.href = '/.netlify/functions/google-oauth-start?userId=' + authToken.substring(0, 20);
+      const user = JSON.parse(userData);
+      
+      // Start OAuth flow with user email as identifier
+      window.location.href = '/.netlify/functions/google-oauth-start?userId=' + encodeURIComponent(user.email);
     }
 
     // Check for Google connection success
