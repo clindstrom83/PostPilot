@@ -1,49 +1,8 @@
-// User Login Function
-const crypto = require('crypto');
-const fs = require('fs').promises;
-const path = require('path');
+// User Login with Supabase
+const { createClient } = require('@supabase/supabase-js');
 
-const USERS_DIR = '/tmp/postpilot-users';
-const ENCRYPTION_KEY = process.env.DB_ENCRYPTION_KEY || 'default-key-change-in-production';
-
-function hashPassword(password) {
-  return crypto.createHash('sha256').update(password + ENCRYPTION_KEY).digest('hex');
-}
-
-function encrypt(text) {
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY.padEnd(32, '0').slice(0, 32)), iv);
-  let encrypted = cipher.update(text, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  return iv.toString('hex') + ':' + encrypted;
-}
-
-async function getUserByEmail(email) {
-  const filename = crypto.createHash('md5').update(email.toLowerCase()).digest('hex');
-  const filepath = path.join(USERS_DIR, `${filename}.json`);
-  try {
-    const data = await fs.readFile(filepath, 'utf8');
-    return JSON.parse(data);
-  } catch (err) {
-    return null;
-  }
-}
-
-function createSession(userId, email, rememberMe = false) {
-  const sessionToken = crypto.randomBytes(32).toString('hex');
-  const expiryDays = rememberMe ? 30 : 1;
-  const sessionData = {
-    userId,
-    email,
-    createdAt: Date.now(),
-    expiresAt: Date.now() + expiryDays * 24 * 60 * 60 * 1000
-  };
-  
-  return {
-    token: sessionToken,
-    data: encrypt(JSON.stringify(sessionData))
-  };
-}
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 exports.handler = async (event) => {
   const headers = {
@@ -66,7 +25,7 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { email, password, rememberMe } = JSON.parse(event.body);
+    const { email, password } = JSON.parse(event.body);
 
     if (!email || !password) {
       return {
@@ -76,9 +35,16 @@ exports.handler = async (event) => {
       };
     }
 
-    const user = await getUserByEmail(email);
-    
-    if (!user) {
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Sign in with Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (authError) {
+      console.error('Supabase login error:', authError);
       return {
         statusCode: 401,
         headers,
@@ -86,16 +52,21 @@ exports.handler = async (event) => {
       };
     }
 
-    const passwordHash = hashPassword(password);
-    if (passwordHash !== user.passwordHash) {
+    // Get user profile
+    const { data: profile, error: profileError } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', authData.user.id)
+      .single();
+
+    if (profileError) {
+      console.error('Profile fetch error:', profileError);
       return {
-        statusCode: 401,
+        statusCode: 500,
         headers,
-        body: JSON.stringify({ error: 'Invalid email or password' })
+        body: JSON.stringify({ error: 'Failed to fetch user profile' })
       };
     }
-
-    const session = createSession(user.id, user.email, rememberMe);
 
     return {
       statusCode: 200,
@@ -103,12 +74,21 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         success: true,
         user: {
-          id: user.id,
-          email: user.email,
-          businessName: user.businessName,
-          subscription: user.subscription
+          id: authData.user.id,
+          email: authData.user.email,
+          businessName: profile.business_name,
+          subscription: {
+            status: profile.subscription_status,
+            plan: profile.subscription_plan,
+            trialEndsAt: profile.trial_ends_at,
+            postsGenerated: profile.posts_generated,
+            postsLimit: profile.posts_limit
+          }
         },
-        session: session
+        session: {
+          token: authData.session.access_token,
+          refreshToken: authData.session.refresh_token
+        }
       })
     };
 
@@ -117,7 +97,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Internal server error' })
+      body: JSON.stringify({ error: 'Internal server error: ' + err.message })
     };
   }
 };

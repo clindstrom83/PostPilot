@@ -1,37 +1,8 @@
-// Verify Session Token
-const crypto = require('crypto');
-const fs = require('fs').promises;
-const path = require('path');
+// Verify Session with Supabase
+const { createClient } = require('@supabase/supabase-js');
 
-const USERS_DIR = '/tmp/postpilot-users';
-const ENCRYPTION_KEY = process.env.DB_ENCRYPTION_KEY || 'default-key-change-in-production';
-
-function decrypt(text) {
-  const parts = text.split(':');
-  const iv = Buffer.from(parts[0], 'hex');
-  const encryptedText = parts[1];
-  const decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY.padEnd(32, '0').slice(0, 32)), iv);
-  let decrypted = decipher.update(encryptedText, 'hex', 'utf8');
-  decrypted += decipher.final('utf8');
-  return decrypted;
-}
-
-async function getUserById(userId) {
-  try {
-    const files = await fs.readdir(USERS_DIR);
-    for (const file of files) {
-      const filepath = path.join(USERS_DIR, file);
-      const data = await fs.readFile(filepath, 'utf8');
-      const user = JSON.parse(data);
-      if (user.id === userId) {
-        return user;
-      }
-    }
-    return null;
-  } catch (err) {
-    return null;
-  }
-}
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 exports.handler = async (event) => {
   const headers = {
@@ -60,64 +31,67 @@ exports.handler = async (event) => {
       return {
         statusCode: 401,
         headers,
-        body: JSON.stringify({ error: 'No authorization token provided' })
+        body: JSON.stringify({ error: 'Missing or invalid authorization header' })
       };
     }
 
-    const sessionData = authHeader.substring(7); // Remove 'Bearer '
-    
-    try {
-      const decrypted = decrypt(sessionData);
-      const session = JSON.parse(decrypted);
-      
-      // Check if session is expired
-      if (session.expiresAt < Date.now()) {
-        return {
-          statusCode: 401,
-          headers,
-          body: JSON.stringify({ error: 'Session expired' })
-        };
-      }
+    const token = authHeader.replace('Bearer ', '');
 
-      // Get user data
-      const user = await getUserById(session.userId);
-      
-      if (!user) {
-        return {
-          statusCode: 401,
-          headers,
-          body: JSON.stringify({ error: 'User not found' })
-        };
-      }
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-      return {
-        statusCode: 200,
-        headers,
-        body: JSON.stringify({
-          success: true,
-          user: {
-            id: user.id,
-            email: user.email,
-            businessName: user.businessName,
-            subscription: user.subscription
-          }
-        })
-      };
+    // Verify the JWT token
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
 
-    } catch (decryptErr) {
+    if (userError || !user) {
       return {
         statusCode: 401,
         headers,
-        body: JSON.stringify({ error: 'Invalid session token' })
+        body: JSON.stringify({ error: 'Invalid or expired session' })
       };
     }
+
+    // Get user profile
+    const { data: profile, error: profileError } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    if (profileError) {
+      console.error('Profile fetch error:', profileError);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Failed to fetch user profile' })
+      };
+    }
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify({
+        valid: true,
+        user: {
+          id: user.id,
+          email: user.email,
+          businessName: profile.business_name,
+          subscription: {
+            status: profile.subscription_status,
+            plan: profile.subscription_plan,
+            trialEndsAt: profile.trial_ends_at,
+            postsGenerated: profile.posts_generated,
+            postsLimit: profile.posts_limit
+          }
+        }
+      })
+    };
 
   } catch (err) {
     console.error('Verify error:', err);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Internal server error' })
+      body: JSON.stringify({ error: 'Internal server error: ' + err.message })
     };
   }
 };

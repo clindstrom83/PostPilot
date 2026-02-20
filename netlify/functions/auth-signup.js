@@ -1,84 +1,10 @@
-// User Signup Function
-const crypto = require('crypto');
-const fs = require('fs').promises;
-const path = require('path');
+// User Signup with Supabase
+const { createClient } = require('@supabase/supabase-js');
 
-// Simple file-based user database (encrypted)
-const USERS_DIR = '/tmp/postpilot-users';
-const ENCRYPTION_KEY = process.env.DB_ENCRYPTION_KEY || 'default-key-change-in-production';
-
-function encrypt(text) {
-  const iv = crypto.randomBytes(16);
-  const cipher = crypto.createCipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY.padEnd(32, '0').slice(0, 32)), iv);
-  let encrypted = cipher.update(text, 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  return iv.toString('hex') + ':' + encrypted;
-}
-
-function hashPassword(password) {
-  return crypto.createHash('sha256').update(password + ENCRYPTION_KEY).digest('hex');
-}
-
-async function ensureUsersDir() {
-  try {
-    await fs.mkdir(USERS_DIR, { recursive: true });
-  } catch (err) {
-    // Directory exists
-  }
-}
-
-async function getUserByEmail(email) {
-  const filename = crypto.createHash('md5').update(email.toLowerCase()).digest('hex');
-  const filepath = path.join(USERS_DIR, `${filename}.json`);
-  try {
-    const data = await fs.readFile(filepath, 'utf8');
-    return JSON.parse(data);
-  } catch (err) {
-    return null;
-  }
-}
-
-async function createUser(email, password, businessName) {
-  const filename = crypto.createHash('md5').update(email.toLowerCase()).digest('hex');
-  const filepath = path.join(USERS_DIR, `${filename}.json`);
-  
-  const user = {
-    id: crypto.randomUUID(),
-    email: email.toLowerCase(),
-    passwordHash: hashPassword(password),
-    businessName,
-    createdAt: new Date().toISOString(),
-    subscription: {
-      status: 'trial',
-      plan: 'starter',
-      trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-      postsGenerated: 0,
-      postsLimit: 30,
-      billingPeriodStart: new Date().toISOString()
-    }
-  };
-  
-  await fs.writeFile(filepath, JSON.stringify(user, null, 2));
-  return user;
-}
-
-function createSession(userId, email) {
-  const sessionToken = crypto.randomBytes(32).toString('hex');
-  const sessionData = {
-    userId,
-    email,
-    createdAt: Date.now(),
-    expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days
-  };
-  
-  return {
-    token: sessionToken,
-    data: encrypt(JSON.stringify(sessionData))
-  };
-}
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 exports.handler = async (event) => {
-  // CORS headers
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -127,23 +53,57 @@ exports.handler = async (event) => {
       };
     }
 
-    await ensureUsersDir();
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Check if user exists
-    const existingUser = await getUserByEmail(email);
-    if (existingUser) {
+    // Sign up user with Supabase Auth
+    const { data: authData, error: authError } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        data: {
+          business_name: businessName
+        }
+      }
+    });
+
+    if (authError) {
+      console.error('Supabase signup error:', authError);
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'An account with this email already exists' })
+        body: JSON.stringify({ error: authError.message })
       };
     }
 
-    // Create user
-    const user = await createUser(email, password, businessName);
+    // Create user profile in database
+    const trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
     
-    // Create session
-    const session = createSession(user.id, user.email);
+    const { data: profile, error: profileError } = await supabase
+      .from('user_profiles')
+      .insert({
+        user_id: authData.user.id,
+        email: email.toLowerCase(),
+        business_name: businessName,
+        subscription_status: 'trial',
+        subscription_plan: 'starter',
+        trial_ends_at: trialEndsAt,
+        posts_generated: 0,
+        posts_limit: 50,
+        billing_period_start: new Date().toISOString()
+      })
+      .select()
+      .single();
+
+    if (profileError) {
+      console.error('Profile creation error:', profileError);
+      // Try to clean up auth user if profile creation failed
+      await supabase.auth.admin.deleteUser(authData.user.id);
+      return {
+        statusCode: 500,
+        headers,
+        body: JSON.stringify({ error: 'Failed to create user profile' })
+      };
+    }
 
     return {
       statusCode: 200,
@@ -151,12 +111,21 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         success: true,
         user: {
-          id: user.id,
-          email: user.email,
-          businessName: user.businessName,
-          subscription: user.subscription
+          id: authData.user.id,
+          email: authData.user.email,
+          businessName: businessName,
+          subscription: {
+            status: 'trial',
+            plan: 'starter',
+            trialEndsAt: trialEndsAt,
+            postsGenerated: 0,
+            postsLimit: 50
+          }
         },
-        session: session
+        session: {
+          token: authData.session.access_token,
+          refreshToken: authData.session.refresh_token
+        }
       })
     };
 
@@ -165,7 +134,7 @@ exports.handler = async (event) => {
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Internal server error' })
+      body: JSON.stringify({ error: 'Internal server error: ' + err.message })
     };
   }
 };
