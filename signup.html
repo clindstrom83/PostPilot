@@ -466,7 +466,7 @@
         }
 
         // Store session token
-        localStorage.setItem('postpilot_session', data.session.data);
+        localStorage.setItem('postpilot_session', data.session.token);
         localStorage.setItem('postpilot_user', JSON.stringify(data.user));
 
         // Redirect to dashboard
