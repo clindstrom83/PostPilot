@@ -289,6 +289,70 @@
         flex-direction: column;
       }
     }
+
+    /* Custom Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    .modal {
+      background: var(--dark);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      max-width: 450px;
+      width: 100%;
+      padding: 32px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 32px;
+      margin: 0 auto 20px;
+    }
+
+    .modal h2 {
+      text-align: center;
+      font-size: 24px;
+      margin-bottom: 12px;
+    }
+
+    .modal p {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .modal-actions .btn {
+      flex: 1;
+    }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -363,15 +427,57 @@
     </div>
   </main>
 
+  <!-- Custom Modal -->
+  <div id="customModal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-icon" id="modalIcon">🔒</div>
+      <h2 id="modalTitle">Authentication Required</h2>
+      <p id="modalMessage">Please log in to continue</p>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+        <button class="btn btn-primary" id="modalAction" onclick="handleModalAction()">Log In</button>
+      </div>
+    </div>
+  </div>
+
   <script src="/dashboard-auth.js"></script>
   <script>
+    // Custom Modal Functions
+    let modalActionCallback = null;
+
+    function showModal(title, message, icon = '🔒', actionText = 'OK', callback = null) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalMessage').textContent = message;
+      document.getElementById('modalIcon').textContent = icon;
+      document.getElementById('modalAction').textContent = actionText;
+      document.getElementById('customModal').classList.remove('hidden');
+      modalActionCallback = callback;
+    }
+
+    function closeModal() {
+      document.getElementById('customModal').classList.add('hidden');
+      modalActionCallback = null;
+    }
+
+    function handleModalAction() {
+      if (modalActionCallback) {
+        modalActionCallback();
+      }
+      closeModal();
+    }
+
+    // Override default alert with custom modal
+    window.alert = function(message) {
+      showModal('Notice', message, 'ℹ️', 'OK');
+    };
+
     async function generateResponse() {
       const reviewText = document.getElementById('reviewInput').value.trim();
       const tone = document.getElementById('toneSelect').value;
       const outputDiv = document.getElementById('responseOutput');
 
       if (!reviewText) {
-        alert('Please paste a review first!');
+        showModal('Review Required', 'Please paste a review before generating a response.', '📝', 'OK');
         return;
       }
 
@@ -418,7 +524,7 @@
     function copyResponse() {
       if (window.currentResponse) {
         navigator.clipboard.writeText(window.currentResponse);
-        alert('Response copied to clipboard!');
+        showModal('Success', 'Response copied to clipboard! Ready to paste into Google Business.', '✅', 'OK');
       }
     }
 
@@ -427,7 +533,7 @@
         const newResponse = prompt('Edit your response:', window.currentResponse);
         if (newResponse) {
           window.currentResponse = newResponse;
-          alert('Response updated! Copy it when ready.');
+          showModal('Response Updated', 'Your edited response is ready. Click "Copy Response" when ready.', '✏️', 'OK');
         }
       }
     }
@@ -436,8 +542,13 @@
       // Get current user ID from session
       const authToken = localStorage.getItem('auth_token');
       if (!authToken) {
-        alert('Please log in first');
-        window.location.href = '/login.html';
+        showModal(
+          'Authentication Required',
+          'You must be logged in to connect your Google Business Profile. Redirecting to login...',
+          '🔒',
+          'Go to Login',
+          () => { window.location.href = '/login.html'; }
+        );
         return;
       }
 

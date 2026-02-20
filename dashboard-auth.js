@@ -4,7 +4,18 @@
 async function checkAuth() {
   const session = localStorage.getItem('postpilot_session');
   if (!session) {
-    window.location.href = '/login.html';
+    // Show modal before redirecting
+    if (typeof showModal === 'function') {
+      showModal(
+        'Authentication Required',
+        'Please log in to access your dashboard.',
+        '🔒',
+        'Go to Login',
+        () => { window.location.href = '/login.html'; }
+      );
+    } else {
+      window.location.href = '/login.html';
+    }
     return null;
   }
 
@@ -25,7 +36,19 @@ async function checkAuth() {
     console.error('Auth check failed:', err);
     localStorage.removeItem('postpilot_session');
     localStorage.removeItem('postpilot_user');
-    window.location.href = '/login.html';
+    
+    // Show modal before redirecting
+    if (typeof showModal === 'function') {
+      showModal(
+        'Session Expired',
+        'Your session has expired. Please log in again.',
+        '⏱️',
+        'Go to Login',
+        () => { window.location.href = '/login.html'; }
+      );
+    } else {
+      window.location.href = '/login.html';
+    }
     return null;
   }
 }
