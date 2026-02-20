@@ -1,8 +1,10 @@
-// User Login with Supabase
-const { createClient } = require('@supabase/supabase-js');
+// Simple Auth Login
+const crypto = require('crypto');
+const { getStore } = require('@netlify/blobs');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+function hashPassword(password) {
+  return crypto.createHash('sha256').update(password + 'reviewpilot-salt-2026').digest('hex');
+}
 
 exports.handler = async (event) => {
   const headers = {
@@ -35,16 +37,11 @@ exports.handler = async (event) => {
       };
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-    // Sign in with Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-      email,
-      password
-    });
-
-    if (authError) {
-      console.error('Supabase login error:', authError);
+    const store = getStore('users');
+    const userKey = `user-${email.toLowerCase()}`;
+    const userData = await store.get(userKey);
+    
+    if (!userData) {
       return {
         statusCode: 401,
         headers,
@@ -52,21 +49,27 @@ exports.handler = async (event) => {
       };
     }
 
-    // Get user profile
-    const { data: profile, error: profileError } = await supabase
-      .from('user_profiles')
-      .select('*')
-      .eq('user_id', authData.user.id)
-      .single();
-
-    if (profileError) {
-      console.error('Profile fetch error:', profileError);
+    const user = JSON.parse(userData);
+    const passwordHash = hashPassword(password);
+    
+    if (passwordHash !== user.passwordHash) {
       return {
-        statusCode: 500,
+        statusCode: 401,
         headers,
-        body: JSON.stringify({ error: 'Failed to fetch user profile' })
+        body: JSON.stringify({ error: 'Invalid email or password' })
       };
     }
+
+    // Create session
+    const sessionToken = crypto.randomBytes(32).toString('hex');
+    const sessionData = {
+      userId: user.id,
+      email: user.email,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000
+    };
+    
+    await store.set(`session-${sessionToken}`, JSON.stringify(sessionData));
 
     return {
       statusCode: 200,
@@ -74,21 +77,12 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         success: true,
         user: {
-          id: authData.user.id,
-          email: authData.user.email,
-          businessName: profile.business_name,
-          subscription: {
-            status: profile.subscription_status,
-            plan: profile.subscription_plan,
-            trialEndsAt: profile.trial_ends_at,
-            postsGenerated: profile.posts_generated,
-            postsLimit: profile.posts_limit
-          }
+          id: user.id,
+          email: user.email,
+          businessName: user.businessName,
+          subscription: user.subscription
         },
-        session: {
-          token: authData.session.access_token,
-          refreshToken: authData.session.refresh_token
-        }
+        session: sessionToken
       })
     };
 
@@ -98,6 +92,6 @@ exports.handler = async (event) => {
       statusCode: 500,
       headers,
       body: JSON.stringify({ error: 'Internal server error: ' + err.message })
-    };
+      };
   }
 };

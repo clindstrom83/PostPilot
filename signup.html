@@ -345,14 +345,9 @@
           </select>
         </div>
 
-        <div class="form-group">
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" required placeholder="Min. 8 characters">
-          <div class="password-strength">
-            <div class="password-strength-bar" id="strengthBar"></div>
-          </div>
-          <div class="password-hint">Use 8+ characters with letters, numbers & symbols</div>
-          <div class="error-message" id="passwordError">Password must be at least 8 characters</div>
+        <div class="info-box" style="background: rgba(79, 172, 254, 0.1); border: 1px solid rgba(79, 172, 254, 0.3); padding: 16px; border-radius: 12px; margin-bottom: 24px;">
+          <strong style="color: #4facfe;">🔑 We'll generate a secure password for you!</strong>
+          <p style="margin: 8px 0 0; font-size: 14px; color: var(--text-muted);">After signup, you'll receive a unique password. Save it somewhere safe!</p>
         </div>
 
         <button type="submit" class="btn" id="submitBtn">
@@ -373,28 +368,6 @@
   </div>
 
   <script>
-    // Password strength checker
-    const passwordInput = document.getElementById('password');
-    const strengthBar = document.getElementById('strengthBar');
-
-    passwordInput.addEventListener('input', () => {
-      const password = passwordInput.value;
-      let strength = 0;
-
-      if (password.length >= 8) strength++;
-      if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
-      if (password.match(/[0-9]/)) strength++;
-      if (password.match(/[^a-zA-Z0-9]/)) strength++;
-
-      strengthBar.className = 'password-strength-bar';
-      if (strength === 1 || strength === 2) {
-        strengthBar.classList.add('weak');
-      } else if (strength === 3) {
-        strengthBar.classList.add('medium');
-      } else if (strength === 4) {
-        strengthBar.classList.add('strong');
-      }
-    });
 
     // Form validation
     const form = document.getElementById('signupForm');
@@ -402,6 +375,16 @@
     const emailInput = document.getElementById('email');
     const businessTypeInput = document.getElementById('businessType');
     const submitBtn = document.getElementById('submitBtn');
+    
+    // Get modal functions from dashboard.html (they should be loaded via custom modal script)
+    // If not, define them here
+    if (typeof showModal === 'undefined') {
+      window.showModal = function(title, message, icon, actionText, callback) {
+        const msg = `${icon} ${title}\n\n${message}`;
+        alert(msg);
+        if (callback) callback();
+      };
+    }
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -425,12 +408,6 @@
         isValid = false;
       }
 
-      if (passwordInput.value.length < 8) {
-        document.getElementById('passwordError').classList.add('show');
-        passwordInput.classList.add('error');
-        isValid = false;
-      }
-
       if (!isValid) return;
 
       // Disable button
@@ -441,8 +418,7 @@
       const formData = {
         name: nameInput.value.trim(),
         email: emailInput.value.trim(),
-        businessType: businessTypeInput.value,
-        password: passwordInput.value
+        businessType: businessTypeInput.value
       };
 
       try {
@@ -454,7 +430,6 @@
           },
           body: JSON.stringify({
             email: formData.email,
-            password: formData.password,
             businessName: formData.businessType
           })
         });
@@ -466,14 +441,20 @@
         }
 
         // Store session token
-        localStorage.setItem('postpilot_session', data.session.token);
+        localStorage.setItem('postpilot_session', data.session);
         localStorage.setItem('postpilot_user', JSON.stringify(data.user));
 
-        // Redirect to dashboard
-        window.location.href = 'dashboard.html';
+        // Show password modal
+        showModal(
+          '✅ Account Created!',
+          `Your password is: ${data.password}\n\nSave this somewhere safe - you'll need it to log in!`,
+          '🔑',
+          'Go to Dashboard',
+          () => { window.location.href = 'dashboard.html'; }
+        );
       } catch (error) {
         console.error('Signup error:', error);
-        alert(error.message || 'Something went wrong. Please try again.');
+        showModal('Signup Failed', error.message || 'Something went wrong. Please try again.', '❌', 'OK');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Start Free Trial';
       }

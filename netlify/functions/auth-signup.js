@@ -1,10 +1,22 @@
-// User Signup with Supabase
-const { createClient } = require('@supabase/supabase-js');
+// Simple Auth Signup - Auto-generated passwords
+const crypto = require('crypto');
+const { getStore } = require('@netlify/blobs');
 
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+function generatePassword() {
+  // Generate a memorable but secure password
+  const adjectives = ['Quick', 'Smart', 'Bold', 'Bright', 'Swift', 'Calm', 'Happy', 'Lucky'];
+  const nouns = ['Tiger', 'Eagle', 'River', 'Mountain', 'Ocean', 'Storm', 'Star', 'Moon'];
+  const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
+  const noun = nouns[Math.floor(Math.random() * nouns.length)];
+  const num = Math.floor(Math.random() * 9999);
+  return `${adj}${noun}${num}`;
+}
 
-exports.handler = async (event) => {
+function hashPassword(password) {
+  return crypto.createHash('sha256').update(password + 'reviewpilot-salt-2026').digest('hex');
+}
+
+exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -25,22 +37,14 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { email, password, businessName } = JSON.parse(event.body);
+    const { email, businessName } = JSON.parse(event.body);
 
     // Validation
-    if (!email || !password || !businessName) {
+    if (!email || !businessName) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Email, password, and business name are required' })
-      };
-    }
-
-    if (password.length < 8) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Password must be at least 8 characters' })
+        body: JSON.stringify({ error: 'Email and business name are required' })
       };
     }
 
@@ -53,57 +57,55 @@ exports.handler = async (event) => {
       };
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
-
-    // Sign up user with Supabase Auth
-    const { data: authData, error: authError } = await supabase.auth.signUp({
-      email,
-      password,
-      options: {
-        data: {
-          business_name: businessName
-        }
-      }
-    });
-
-    if (authError) {
-      console.error('Supabase signup error:', authError);
+    // Use Netlify Blobs for persistent storage
+    const store = getStore('users');
+    
+    // Check if user exists
+    const userKey = `user-${email.toLowerCase()}`;
+    const existingUser = await store.get(userKey);
+    
+    if (existingUser) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: authError.message })
+        body: JSON.stringify({ error: 'An account with this email already exists' })
       };
     }
 
-    // Create user profile in database
-    const trialEndsAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString();
+    // Generate password
+    const generatedPassword = generatePassword();
+    const passwordHash = hashPassword(generatedPassword);
+
+    // Create user
+    const user = {
+      id: crypto.randomUUID(),
+      email: email.toLowerCase(),
+      passwordHash,
+      businessName,
+      createdAt: new Date().toISOString(),
+      subscription: {
+        status: 'trial',
+        plan: 'starter',
+        trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+        postsGenerated: 0,
+        postsLimit: 50,
+        billingPeriodStart: new Date().toISOString()
+      }
+    };
+
+    // Save user
+    await store.set(userKey, JSON.stringify(user));
+
+    // Create session token
+    const sessionToken = crypto.randomBytes(32).toString('hex');
+    const sessionData = {
+      userId: user.id,
+      email: user.email,
+      createdAt: Date.now(),
+      expiresAt: Date.now() + 30 * 24 * 60 * 60 * 1000 // 30 days
+    };
     
-    const { data: profile, error: profileError } = await supabase
-      .from('user_profiles')
-      .insert({
-        user_id: authData.user.id,
-        email: email.toLowerCase(),
-        business_name: businessName,
-        subscription_status: 'trial',
-        subscription_plan: 'starter',
-        trial_ends_at: trialEndsAt,
-        posts_generated: 0,
-        posts_limit: 50,
-        billing_period_start: new Date().toISOString()
-      })
-      .select()
-      .single();
-
-    if (profileError) {
-      console.error('Profile creation error:', profileError);
-      // Try to clean up auth user if profile creation failed
-      await supabase.auth.admin.deleteUser(authData.user.id);
-      return {
-        statusCode: 500,
-        headers,
-        body: JSON.stringify({ error: 'Failed to create user profile' })
-      };
-    }
+    await store.set(`session-${sessionToken}`, JSON.stringify(sessionData));
 
     return {
       statusCode: 200,
@@ -111,21 +113,13 @@ exports.handler = async (event) => {
       body: JSON.stringify({
         success: true,
         user: {
-          id: authData.user.id,
-          email: authData.user.email,
-          businessName: businessName,
-          subscription: {
-            status: 'trial',
-            plan: 'starter',
-            trialEndsAt: trialEndsAt,
-            postsGenerated: 0,
-            postsLimit: 50
-          }
+          id: user.id,
+          email: user.email,
+          businessName: user.businessName,
+          subscription: user.subscription
         },
-        session: {
-          token: authData.session.access_token,
-          refreshToken: authData.session.refresh_token
-        }
+        session: sessionToken,
+        password: generatedPassword // Send back the generated password
       })
     };
 

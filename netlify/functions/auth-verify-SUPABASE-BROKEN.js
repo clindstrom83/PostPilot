@@ -1,5 +1,8 @@
-// Simple Auth Verify
-const { getStore } = require('@netlify/blobs');
+// Verify Session with Supabase
+const { createClient } = require('@supabase/supabase-js');
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 exports.handler = async (event) => {
   const headers = {
@@ -33,11 +36,13 @@ exports.handler = async (event) => {
     }
 
     const token = authHeader.replace('Bearer ', '');
-    const store = getStore('users');
-    
-    const sessionData = await store.get(`session-${token}`);
-    
-    if (!sessionData) {
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+
+    // Verify the JWT token
+    const { data: { user }, error: userError } = await supabase.auth.getUser(token);
+
+    if (userError || !user) {
       return {
         statusCode: 401,
         headers,
@@ -45,29 +50,21 @@ exports.handler = async (event) => {
       };
     }
 
-    const session = JSON.parse(sessionData);
-    
-    // Check expiry
-    if (session.expiresAt < Date.now()) {
-      await store.delete(`session-${token}`);
+    // Get user profile
+    const { data: profile, error: profileError } = await supabase
+      .from('user_profiles')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    if (profileError) {
+      console.error('Profile fetch error:', profileError);
       return {
-        statusCode: 401,
+        statusCode: 500,
         headers,
-        body: JSON.stringify({ error: 'Session expired' })
+        body: JSON.stringify({ error: 'Failed to fetch user profile' })
       };
     }
-
-    // Get user
-    const userData = await store.get(`user-${session.email}`);
-    if (!userData) {
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: 'User not found' })
-      };
-    }
-
-    const user = JSON.parse(userData);
 
     return {
       statusCode: 200,
@@ -77,8 +74,14 @@ exports.handler = async (event) => {
         user: {
           id: user.id,
           email: user.email,
-          businessName: user.businessName,
-          subscription: user.subscription
+          businessName: profile.business_name,
+          subscription: {
+            status: profile.subscription_status,
+            plan: profile.subscription_plan,
+            trialEndsAt: profile.trial_ends_at,
+            postsGenerated: profile.posts_generated,
+            postsLimit: profile.posts_limit
+          }
         }
       })
     };
