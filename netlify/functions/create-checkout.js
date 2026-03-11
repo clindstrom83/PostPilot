@@ -1,7 +1,6 @@
-// Create Stripe Checkout Session with Trial
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -22,66 +21,70 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { email, plan } = JSON.parse(event.body);
+    const { plan, name, email, setupAmount, monthlyAmount } = JSON.parse(event.body);
 
-    if (!email) {
+    if (!plan || !name || !email || !setupAmount || !monthlyAmount) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Email is required' })
+        body: JSON.stringify({ error: 'Missing required fields' })
       };
     }
 
-    // Determine price based on plan (default to Starter)
-    const priceId = plan === 'pro' 
-      ? process.env.STRIPE_PRICE_ID_PRO || 'price_1T2h2kRztedIDFZCEUQ8PUS0'
-      : process.env.STRIPE_PRICE_ID_STARTER || 'price_1T2h2aRztedIDFZCuu8cd5Nn';
-
-    const siteUrl = process.env.SITE_URL || 'https://reviewpilot.business';
-
-    // Create Checkout Session with trial
+    // Create Stripe Checkout session with one-time setup + subscription
     const session = await stripe.checkout.sessions.create({
       mode: 'subscription',
       payment_method_types: ['card'],
+      customer_email: email,
       line_items: [
         {
-          price: priceId,
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan - Setup Fee`,
+              description: 'One-time website build fee'
+            },
+            unit_amount: setupAmount,
+          },
+          quantity: 1,
+        },
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan - Monthly`,
+              description: 'Hosting, updates, and maintenance'
+            },
+            unit_amount: monthlyAmount,
+            recurring: {
+              interval: 'month',
+            },
+          },
           quantity: 1,
         },
       ],
-      customer_email: email,
-      subscription_data: {
-        trial_period_days: 7,
-        trial_settings: {
-          end_behavior: {
-            missing_payment_method: 'cancel',
-          },
-        },
-      },
-      success_url: `${siteUrl}/dashboard.html?checkout=success`,
-      cancel_url: `${siteUrl}/signup.html?checkout=cancelled`,
-      allow_promotion_codes: true,
-      billing_address_collection: 'auto',
       metadata: {
-        email: email,
+        plan,
+        customer_name: name,
+        setup_amount: setupAmount.toString(),
+        monthly_amount: monthlyAmount.toString()
       },
+      success_url: `${process.env.SITE_URL || 'https://reviewpilot.business'}/intake-form.html?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.SITE_URL || 'https://reviewpilot.business'}/signup.html`,
+      allow_promotion_codes: true,
     });
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({
-        sessionId: session.id,
-        url: session.url
-      })
+      body: JSON.stringify({ id: session.id })
     };
-
-  } catch (err) {
-    console.error('Stripe checkout error:', err);
+  } catch (error) {
+    console.error('Stripe checkout error:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Failed to create checkout session: ' + err.message })
+      body: JSON.stringify({ error: error.message })
     };
   }
 };

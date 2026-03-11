@@ -1,656 +1,437 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign Up - ReviewPilot</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --darker: #0f0f1e;
-      --text: #e4e4e7;
-      --text-muted: #a1a1aa;
-      --card-bg: rgba(255, 255, 255, 0.05);
-      --border: rgba(255, 255, 255, 0.1);
-      --error: #ef4444;
-      --success: #10b981;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
-      background: var(--darker);
-      color: var(--text);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .bg-animated {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: -1;
-      background: var(--darker);
-    }
-
-    .bg-animated::before,
-    .bg-animated::after {
-      content: '';
-      position: absolute;
-      width: 600px;
-      height: 600px;
-      border-radius: 50%;
-      filter: blur(80px);
-      opacity: 0.3;
-      animation: float 20s ease-in-out infinite;
-    }
-
-    .bg-animated::before {
-      background: var(--gradient-primary);
-      top: -200px;
-      right: -200px;
-    }
-
-    .bg-animated::after {
-      background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-      bottom: -200px;
-      left: -200px;
-      animation-delay: 10s;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: translate(0, 0) scale(1); }
-      50% { transform: translate(50px, 50px) scale(1.1); }
-    }
-
-    .signup-container {
-      max-width: 480px;
-      width: 100%;
-    }
-
-    .logo-section {
-      text-align: center;
-      margin-bottom: 40px;
-    }
-
-    .logo {
-      font-size: 32px;
-      font-weight: 900;
-      background: var(--gradient-primary);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      text-decoration: none;
-      display: inline-block;
-      margin-bottom: 12px;
-    }
-
-    .logo-tagline {
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    .signup-card {
-      background: var(--card-bg);
-      border: 1px solid var(--border);
-      border-radius: 24px;
-      padding: 48px;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-
-    h1 {
-      font-size: 28px;
-      font-weight: 800;
-      margin-bottom: 8px;
-      text-align: center;
-    }
-
-    .subtitle {
-      text-align: center;
-      color: var(--text-muted);
-      margin-bottom: 32px;
-      font-size: 15px;
-    }
-
-    .form-group {
-      margin-bottom: 24px;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      margin-bottom: 8px;
-      font-size: 14px;
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 14px 16px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      color: var(--text);
-      font-size: 15px;
-      transition: all 0.3s ease;
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-      outline: none;
-      border-color: #667eea;
-      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-    }
-
-    .form-group input.error {
-      border-color: var(--error);
-    }
-
-    .error-message {
-      color: var(--error);
-      font-size: 13px;
-      margin-top: 6px;
-      display: none;
-    }
-
-    .error-message.show {
-      display: block;
-    }
-
-    .password-strength {
-      margin-top: 8px;
-      height: 4px;
-      background: rgba(255, 255, 255, 0.1);
-      border-radius: 2px;
-      overflow: hidden;
-    }
-
-    .password-strength-bar {
-      height: 100%;
-      width: 0%;
-      transition: all 0.3s ease;
-      border-radius: 2px;
-    }
-
-    .password-strength-bar.weak {
-      width: 33%;
-      background: var(--error);
-    }
-
-    .password-strength-bar.medium {
-      width: 66%;
-      background: #f59e0b;
-    }
-
-    .password-strength-bar.strong {
-      width: 100%;
-      background: var(--success);
-    }
-
-    .password-hint {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    .btn {
-      width: 100%;
-      padding: 16px;
-      background: var(--gradient-primary);
-      color: white;
-      border: none;
-      border-radius: 12px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-    }
-
-    .btn:hover:not(:disabled) {
-      transform: translateY(-2px);
-      box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
-    }
-
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
-
-    .divider {
-      text-align: center;
-      margin: 24px 0;
-      color: var(--text-muted);
-      font-size: 14px;
-      position: relative;
-    }
-
-    .divider::before,
-    .divider::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      width: 40%;
-      height: 1px;
-      background: var(--border);
-    }
-
-    .divider::before {
-      left: 0;
-    }
-
-    .divider::after {
-      right: 0;
-    }
-
-    .login-link {
-      text-align: center;
-      margin-top: 24px;
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-
-    .login-link a {
-      color: #667eea;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    .login-link a:hover {
-      text-decoration: underline;
-    }
-
-    .terms-notice {
-      margin-top: 24px;
-      font-size: 12px;
-      color: var(--text-muted);
-      text-align: center;
-      line-height: 1.6;
-    }
-
-    .terms-notice a {
-      color: #667eea;
-      text-decoration: none;
-    }
-
-    .terms-notice a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 540px) {
-      .signup-card {
-        padding: 32px 24px;
-      }
-
-      h1 {
-        font-size: 24px;
-      }
-    }
-
-    @keyframes slideUp {
-      from {
-        opacity: 0;
-        transform: translateY(30px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Get Started - ReviewPilot</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .signup-container {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .logo h1 {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .logo p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+        
+        .plan-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        
+        .plan-option {
+            flex: 1;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .plan-option:hover {
+            border-color: var(--primary);
+            background: var(--light-gray);
+        }
+        
+        .plan-option.active {
+            border-color: var(--primary);
+            background: #eff6ff;
+            border-width: 3px;
+        }
+        
+        .plan-name {
+            font-weight: 900;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .plan-price {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .plan-setup {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .submit-button {
+            width: 100%;
+            background: var(--primary);
+            color: var(--white);
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 24px;
+        }
+        
+        .submit-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .submit-button:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .plan-details {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .plan-details h3 {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+        
+        .plan-details ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .plan-details li {
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--dark);
+        }
+        
+        .plan-details li::before {
+            content: "✓ ";
+            color: var(--accent);
+            font-weight: 900;
+            margin-right: 8px;
+        }
+        
+        .price-summary {
+            border-top: 2px solid #e2e8f0;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .price-row.total {
+            font-weight: 900;
+            font-size: 20px;
+            color: var(--primary);
+            border-top: 2px solid #e2e8f0;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+        
+        .security-note {
+            text-align: center;
+            color: var(--gray);
+            font-size: 13px;
+            margin-top: 20px;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .back-link a:hover {
+            color: var(--primary);
+        }
+        
+        @media (max-width: 768px) {
+            .signup-container {
+                padding: 32px 24px;
+            }
+            
+            .plan-selector {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="bg-animated"></div>
-
-  <div class="signup-container">
-    <div class="logo-section">
-      <a href="index.html" class="logo">ReviewPilot</a>
-      <div class="logo-tagline">AI-powered review response automation</div>
-    </div>
-
-    <div class="signup-card">
-      <h1>Create Your Account</h1>
-      <p class="subtitle">Start your 7-day free trial</p>
-
-      <form id="signupForm">
-        <div class="form-group">
-          <label for="name">Full Name</label>
-          <input type="text" id="name" name="name" required placeholder="John Doe">
-          <div class="error-message" id="nameError">Please enter your name</div>
+    <div class="signup-container">
+        <div class="logo">
+            <h1>ReviewPilot</h1>
+            <p>Choose Your Plan</p>
         </div>
-
-        <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required placeholder="you@example.com">
-          <div class="error-message" id="emailError">Please enter a valid email</div>
-        </div>
-
-        <div class="form-group">
-          <label for="businessType">Business Type</label>
-          <select id="businessType" name="businessType" required>
-            <option value="">Select your business...</option>
-            <option value="gym">Gym / Fitness Center</option>
-            <option value="restaurant">Restaurant / Cafe</option>
-            <option value="salon">Hair Salon / Barber</option>
-            <option value="realtor">Real Estate Agent</option>
-            <option value="coach">Life Coach / Business Coach</option>
-            <option value="photographer">Photographer</option>
-            <option value="lawyer">Law Firm / Attorney</option>
-            <option value="dentist">Dentist / Dental Office</option>
-            <option value="plumber">Plumber / HVAC</option>
-            <option value="boutique">Boutique / Retail Store</option>
-            <option value="consultant">Consultant</option>
-            <option value="agency">Marketing Agency</option>
-            <option value="freelancer">Freelancer</option>
-            <option value="other">Other</option>
-          </select>
-        </div>
-
-        <div class="info-box" style="background: rgba(79, 172, 254, 0.1); border: 1px solid rgba(79, 172, 254, 0.3); padding: 16px; border-radius: 12px; margin-bottom: 24px;">
-          <strong style="color: #4facfe;">🔑 We'll generate a secure password for you!</strong>
-          <p style="margin: 8px 0 0; font-size: 14px; color: var(--text-muted);">After signup, you'll receive a unique password. Save it somewhere safe!</p>
-        </div>
-
-        <button type="submit" class="btn" id="submitBtn">
-          Start Free Trial
-        </button>
-
-        <div class="terms-notice">
-          By signing up, you agree to our 
-          <a href="terms.html">Terms of Service</a> and 
-          <a href="privacy.html">Privacy Policy</a>
-        </div>
-      </form>
-
-      <div class="login-link">
-        Already have an account? <a href="login.html">Log in</a>
-      </div>
-    </div>
-  </div>
-
-  <script>
-
-    // Form validation
-    const form = document.getElementById('signupForm');
-    const nameInput = document.getElementById('name');
-    const emailInput = document.getElementById('email');
-    const businessTypeInput = document.getElementById('businessType');
-    const submitBtn = document.getElementById('submitBtn');
-    
-    // Get modal functions from dashboard.html (they should be loaded via custom modal script)
-    // If not, define them here
-    if (typeof showModal === 'undefined') {
-      window.showModal = function(title, message, icon, actionText, callback) {
-        const msg = `${icon} ${title}\n\n${message}`;
-        alert(msg);
-        if (callback) callback();
-      };
-    }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      // Reset errors
-      document.querySelectorAll('.error-message').forEach(el => el.classList.remove('show'));
-      document.querySelectorAll('input, select').forEach(el => el.classList.remove('error'));
-
-      // Validate
-      let isValid = true;
-
-      if (!nameInput.value.trim()) {
-        document.getElementById('nameError').classList.add('show');
-        nameInput.classList.add('error');
-        isValid = false;
-      }
-
-      if (!emailInput.value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-        document.getElementById('emailError').classList.add('show');
-        emailInput.classList.add('error');
-        isValid = false;
-      }
-
-      if (!isValid) return;
-
-      // Disable button
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Creating account...';
-
-      // Get form data
-      const formData = {
-        name: nameInput.value.trim(),
-        email: emailInput.value.trim(),
-        businessType: businessTypeInput.value
-      };
-
-      try {
-        // Call backend signup API
-        const response = await fetch('/.netlify/functions/auth-signup', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: formData.email,
-            businessName: formData.businessType
-          })
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || 'Signup failed');
-        }
-
-        // Store session token and password temporarily
-        localStorage.setItem('postpilot_session', data.session);
-        localStorage.setItem('postpilot_user', JSON.stringify(data.user));
-        localStorage.setItem('postpilot_password', data.password);
-        localStorage.setItem('postpilot_pending_checkout', 'true');
-
-        // Show password modal FIRST
-        submitBtn.textContent = 'Account created!';
-        showPasswordModal(data.password, formData.email);
-
-      } catch (error) {
-        console.error('Signup error:', error);
-        showModal('Signup Failed', error.message || 'Something went wrong. Please try again.', '❌', 'OK');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Start Free Trial';
-      }
-    });
-
-    // Show password modal, then redirect to checkout
-    async function showPasswordModal(password, email) {
-      // Create modal
-      const modal = document.createElement('div');
-      modal.style.cssText = `
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.85);
-        backdrop-filter: blur(8px);
-        z-index: 10000;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-      `;
-
-      modal.innerHTML = `
-        <div style="
-          background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-          border: 2px solid rgba(102, 126, 234, 0.3);
-          border-radius: 24px;
-          padding: 48px;
-          max-width: 520px;
-          width: 100%;
-          box-shadow: 0 25px 80px rgba(0, 0, 0, 0.6);
-          animation: slideUp 0.4s ease;
-        ">
-          <div style="text-align: center; margin-bottom: 24px;">
-            <div style="
-              width: 80px;
-              height: 80px;
-              margin: 0 auto 20px;
-              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-              border-radius: 50%;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-size: 40px;
-              box-shadow: 0 10px 40px rgba(102, 126, 234, 0.4);
-            ">
-              🔑
+        
+        <!-- Plan Selector -->
+        <div class="plan-selector">
+            <div class="plan-option active" data-plan="starter">
+                <div class="plan-name">Starter</div>
+                <div class="plan-setup">$297</div>
+                <div class="plan-price">+ $39/mo</div>
             </div>
-            <h2 style="
-              font-size: 28px;
-              font-weight: 800;
-              color: #fff;
-              margin-bottom: 12px;
-            ">Save Your Password!</h2>
-            <p style="
-              color: #a1a1aa;
-              font-size: 15px;
-              line-height: 1.6;
-            ">Your account has been created. Copy this password now - you won't see it again!</p>
-          </div>
-
-          <div style="
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 24px;
-          ">
-            <div style="color: #a1a1aa; font-size: 13px; font-weight: 600; margin-bottom: 8px;">YOUR PASSWORD:</div>
-            <div style="
-              font-size: 24px;
-              font-weight: 700;
-              color: #fff;
-              letter-spacing: 2px;
-              user-select: all;
-              word-break: break-all;
-              margin-bottom: 12px;
-            " id="passwordDisplay">${password}</div>
-            <button onclick="copyPassword('${password}')" style="
-              width: 100%;
-              padding: 12px;
-              background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-              color: white;
-              border: none;
-              border-radius: 10px;
-              font-weight: 700;
-              cursor: pointer;
-              transition: all 0.3s ease;
-            " onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
-              📋 Copy Password
+            <div class="plan-option" data-plan="pro">
+                <div class="plan-name">Pro</div>
+                <div class="plan-setup">$497</div>
+                <div class="plan-price">+ $49/mo</div>
+            </div>
+            <div class="plan-option" data-plan="enterprise">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-setup">$997</div>
+                <div class="plan-price">+ $99/mo</div>
+            </div>
+        </div>
+        
+        <!-- Plan Details -->
+        <div class="plan-details" id="plan-details">
+            <!-- Dynamically updated -->
+        </div>
+        
+        <!-- Signup Form -->
+        <form id="signup-form">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-input" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-input" name="email" required>
+            </div>
+            
+            <!-- Price Summary -->
+            <div class="price-summary">
+                <div class="price-row">
+                    <span>One-time setup:</span>
+                    <span id="setup-price">$297</span>
+                </div>
+                <div class="price-row">
+                    <span>Monthly subscription:</span>
+                    <span id="monthly-price">$39/month</span>
+                </div>
+                <div class="price-row total">
+                    <span>Due today:</span>
+                    <span id="total-price">$336</span>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-button" id="checkout-button">
+                Proceed to Secure Checkout →
             </button>
-          </div>
-
-          <div style="
-            background: rgba(239, 68, 68, 0.1);
-            border: 1px solid rgba(239, 68, 68, 0.3);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 24px;
-          ">
-            <div style="color: #ef4444; font-weight: 700; margin-bottom: 8px;">⚠️ Important:</div>
-            <div style="color: #fca5a5; font-size: 14px; line-height: 1.6;">
-              Save this password in a safe place (password manager, notes app, etc.). You'll need it to log in after completing payment.
-            </div>
-          </div>
-
-          <button onclick="proceedToCheckout('${email}')" style="
-            width: 100%;
-            padding: 18px;
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
-          " onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 15px 40px rgba(16, 185, 129, 0.6)'" onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 10px 30px rgba(16, 185, 129, 0.4)'">
-            I've Saved My Password - Continue to Payment →
-          </button>
+        </form>
+        
+        <p class="security-note">🔒 Secure payment powered by Stripe. Your card info is never stored on our servers.</p>
+        
+        <div class="back-link">
+            <a href="/index.html">← Back to pricing</a>
         </div>
-      `;
-
-      document.body.appendChild(modal);
-    }
-
-    // Copy password function
-    window.copyPassword = function(password) {
-      navigator.clipboard.writeText(password).then(() => {
-        const btn = event.target;
-        const originalText = btn.innerHTML;
-        btn.innerHTML = '✅ Copied!';
-        btn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
-        setTimeout(() => {
-          btn.innerHTML = originalText;
-          btn.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
-        }, 2000);
-      });
-    };
-
-    // Proceed to checkout
-    window.proceedToCheckout = async function(email) {
-      const btn = event.target;
-      btn.disabled = true;
-      btn.innerHTML = 'Redirecting to payment...';
-
-      try {
-        const checkoutResponse = await fetch('/.netlify/functions/create-checkout', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            email: email,
-            plan: 'starter' // Default to starter plan
-          })
+    </div>
+    
+    <script>
+        const plans = {
+            starter: {
+                name: 'Starter',
+                setup: 29700, // cents
+                monthly: 3900, // cents
+                features: [
+                    'Up to 5 pages',
+                    'Mobile responsive',
+                    '1 update per month',
+                    'Hosting & SSL included',
+                    '48-hour email support'
+                ]
+            },
+            pro: {
+                name: 'Pro',
+                setup: 49700,
+                monthly: 4900,
+                features: [
+                    'Up to 10 pages',
+                    '4 updates per month',
+                    'E-commerce (50 products)',
+                    'Booking system',
+                    'Blog setup',
+                    '24-hour email support'
+                ]
+            },
+            enterprise: {
+                name: 'Enterprise',
+                setup: 99700,
+                monthly: 9900,
+                features: [
+                    'UNLIMITED pages',
+                    'UNLIMITED updates',
+                    'Advanced e-commerce',
+                    'Custom features',
+                    'Dedicated account manager',
+                    '12-hour support'
+                ]
+            }
+        };
+        
+        let selectedPlan = 'starter';
+        
+        // Plan selection
+        document.querySelectorAll('.plan-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.plan-option').forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+                selectedPlan = option.dataset.plan;
+                updatePlanDetails();
+            });
         });
-
-        const checkoutData = await checkoutResponse.json();
-
-        if (!checkoutResponse.ok) {
-          throw new Error(checkoutData.error || 'Failed to create checkout session');
+        
+        function updatePlanDetails() {
+            const plan = plans[selectedPlan];
+            const setupDollars = (plan.setup / 100).toFixed(2);
+            const monthlyDollars = (plan.monthly / 100).toFixed(2);
+            const totalDollars = ((plan.setup + plan.monthly) / 100).toFixed(2);
+            
+            document.getElementById('plan-details').innerHTML = `
+                <h3>${plan.name} Plan</h3>
+                <ul>
+                    ${plan.features.map(f => `<li>${f}</li>`).join('')}
+                </ul>
+            `;
+            
+            document.getElementById('setup-price').textContent = `$${setupDollars}`;
+            document.getElementById('monthly-price').textContent = `$${monthlyDollars}/month`;
+            document.getElementById('total-price').textContent = `$${totalDollars}`;
         }
-
-        // Redirect to Stripe Checkout
-        window.location.href = checkoutData.url;
-
-      } catch (error) {
-        console.error('Checkout error:', error);
-        alert('Failed to create checkout session. Please try again or contact support.');
-        btn.disabled = false;
-        btn.innerHTML = 'I\'ve Saved My Password - Continue to Payment →';
-      }
-    };
-
-  </script>
-  <script>
-    // Simple modal fallback if custom modal script not loaded
-    if (typeof showModal === 'undefined') {
-      window.showModal = function(title, message, icon, actionText, callback) {
-        alert(`${icon} ${title}\n\n${message}`);
-        if (callback) callback();
-      };
-    }
-  </script>
+        
+        updatePlanDetails();
+        
+        // Form submission
+        const stripe = Stripe('pk_live_51QhYpFBzK9NzrL4UDmSJoY0b7xLG0pZYKJPxHwEVvKRdkPJGKWPb9M8cY5vO3qJ4ZiLKvT9aMdW2nHfR3pQ6uXyZ00IgNzYoJx'); // Replace with your actual key
+        
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const button = document.getElementById('checkout-button');
+            button.disabled = true;
+            button.textContent = 'Processing...';
+            
+            const formData = new FormData(e.target);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const plan = plans[selectedPlan];
+            
+            try {
+                // Create Stripe checkout session
+                const response = await fetch('/.netlify/functions/create-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        plan: selectedPlan,
+                        name,
+                        email,
+                        setupAmount: plan.setup,
+                        monthlyAmount: plan.monthly
+                    })
+                });
+                
+                const session = await response.json();
+                
+                if (session.error) {
+                    throw new Error(session.error);
+                }
+                
+                // Redirect to Stripe Checkout
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id
+                });
+                
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+            } catch (error) {
+                alert('Payment error: ' + error.message);
+                button.disabled = false;
+                button.textContent = 'Proceed to Secure Checkout →';
+            }
+        });
+    </script>
 </body>
 </html>
