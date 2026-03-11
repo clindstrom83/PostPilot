@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Website Intake Form - ReviewPilot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--light-gray);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--white);
+            padding: 40px 20px;
+            border-radius: 16px;
+        }
+        
+        .header h1 {
+            font-size: 36px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+        
+        .header p {
+            font-size: 18px;
+            color: var(--gray);
+        }
+        
+        .progress-bar {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+        
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+        
+        .progress-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--light-gray);
+            color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 8px;
+            font-weight: 900;
+            font-size: 18px;
+        }
+        
+        .progress-step.active .step-number {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .progress-step.completed .step-number {
+            background: var(--accent);
+            color: var(--white);
+        }
+        
+        .step-label {
+            font-size: 13px;
+            color: var(--gray);
+            font-weight: 600;
+        }
+        
+        .form-section {
+            background: var(--white);
+            padding: 40px;
+            border-radius: 16px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        
+        .form-section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: var(--dark);
+        }
+        
+        .section-subtitle {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .form-label .required {
+            color: #ef4444;
+        }
+        
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .form-textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .form-hint {
+            font-size: 14px;
+            color: var(--gray);
+            margin-top: 6px;
+        }
+        
+        .file-upload {
+            border: 2px dashed #e2e8f0;
+            border-radius: 10px;
+            padding: 32px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--primary);
+            background: var(--light-gray);
+        }
+        
+        .file-upload input {
+            display: none;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: space-between;
+            margin-top: 32px;
+        }
+        
+        .btn {
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            font-family: inherit;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+        
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        
+        .btn-success {
+            background: var(--accent);
+            color: var(--white);
+        }
+        
+        .btn-success:hover {
+            background: #059669;
+        }
+        
+        .success-message {
+            background: var(--white);
+            padding: 60px 40px;
+            border-radius: 16px;
+            text-align: center;
+            display: none;
+        }
+        
+        .success-message.show {
+            display: block;
+        }
+        
+        .success-icon {
+            font-size: 72px;
+            margin-bottom: 24px;
+        }
+        
+        .success-message h2 {
+            font-size: 32px;
+            font-weight: 900;
+            margin-bottom: 16px;
+        }
+        
+        .success-message p {
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 32px;
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .form-section {
+                padding: 24px;
+            }
+            
+            .section-title {
+                font-size: 24px;
+            }
+            
+            .form-actions {
+                flex-direction: column;
+            }
+            
+            .progress-steps {
+                flex-wrap: wrap;
+                gap: 12px;
+            }
+            
+            .step-label {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>Let's Build Your Website!</h1>
+            <p>Fill out the form below and we'll have your custom website ready in 24 hours.</p>
+        </div>
+        
+        <!-- Progress Bar -->
+        <div class="progress-bar">
+            <div class="progress-steps">
+                <div class="progress-step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Business Info</div>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Content</div>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Design</div>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Technical</div>
+                </div>
+                <div class="progress-step" data-step="5">
+                    <div class="step-number">5</div>
+                    <div class="step-label">Launch</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Form -->
+        <form id="intake-form">
+            <!-- Step 1: Business Info -->
+            <div class="form-section active" data-section="1">
+                <h2 class="section-title">Tell Us About Your Business</h2>
+                <p class="section-subtitle">We need to understand your business to build the perfect website.</p>
+                
+                <div class="form-group">
+                    <label class="form-label">Business Name <span class="required">*</span></label>
+                    <input type="text" class="form-input" name="business_name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Industry/Niche <span class="required">*</span></label>
+                    <select class="form-select" name="industry" required>
+                        <option value="">Select your industry...</option>
+                        <option value="restaurant">Restaurant/Food Service</option>
+                        <option value="fitness">Fitness/Gym</option>
+                        <option value="salon">Salon/Beauty</option>
+                        <option value="contractor">Contractor/Construction</option>
+                        <option value="coach">Coach/Consultant</option>
+                        <option value="ecommerce">E-commerce/Retail</option>
+                        <option value="professional">Professional Services (Law, Accounting, etc.)</option>
+                        <option value="creative">Creative Services (Design, Photography, etc.)</option>
+                        <option value="health">Healthcare/Wellness</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">What does your business do? <span class="required">*</span></label>
+                    <textarea class="form-textarea" name="business_description" required placeholder="In 2-3 sentences, describe what your business does and what makes it unique..."></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Who is your target audience?</label>
+                    <input type="text" class="form-input" name="target_audience" placeholder="e.g., Local homeowners, Fitness enthusiasts, Small business owners">
+                    <p class="form-hint">Who are your ideal customers?</p>
+                </div>
+                
+                <div class="form-actions">
+                    <div></div>
+                    <button type="button" class="btn btn-primary next-step">Next: Content →</button>
+                </div>
+            </div>
+            
+            <!-- Step 2: Content -->
+            <div class="form-section" data-section="2">
+                <h2 class="section-title">Website Content</h2>
+                <p class="section-subtitle">What pages and content do you need on your website?</p>
+                
+                <div class="form-group">
+                    <label class="form-label">What pages do you need? <span class="required">*</span></label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="pages[]" value="home" checked disabled>
+                            <span>Home (included automatically)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="pages[]" value="about">
+                            <span>About Us</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="pages[]" value="services">
+                            <span>Services/What We Do</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="pages[]" value="products">
+                            <span>Products/Shop</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="pages[]" value="gallery">
+                            <span>Gallery/Portfolio</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="pages[]" value="testimonials">
+                            <span>Testimonials/Reviews</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="pages[]" value="blog">
+                            <span>Blog/News</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="pages[]" value="contact">
+                            <span>Contact Us</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Other pages needed?</label>
+                    <input type="text" class="form-input" name="custom_pages" placeholder="e.g., FAQ, Team, Pricing, Book Appointment">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Do you have content/copy written? <span class="required">*</span></label>
+                    <select class="form-select" name="content_status" required>
+                        <option value="">Select...</option>
+                        <option value="ready">Yes, I have all the text ready</option>
+                        <option value="partial">I have some content, need help with the rest</option>
+                        <option value="none">No, please write it for me</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Product/Service Details</label>
+                    <textarea class="form-textarea" name="products_services" placeholder="If you're selling products or services, list them here (name, price, description)..."></textarea>
+                    <p class="form-hint">If e-commerce, list your top products. We'll work with you on the full catalog.</p>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary prev-step">← Back</button>
+                    <button type="button" class="btn btn-primary next-step">Next: Design →</button>
+                </div>
+            </div>
+            
+            <!-- Step 3: Design -->
+            <div class="form-section" data-section="3">
+                <h2 class="section-title">Design Preferences</h2>
+                <p class="section-subtitle">Help us understand your visual style and brand.</p>
+                
+                <div class="form-group">
+                    <label class="form-label">Upload Your Logo <span class="required">*</span></label>
+                    <div class="file-upload" onclick="document.getElementById('logo-upload').click()">
+                        <div class="upload-icon">📁</div>
+                        <div><strong>Click to upload</strong> or drag and drop</div>
+                        <div class="form-hint">PNG, JPG, or SVG (max 10MB)</div>
+                        <input type="file" id="logo-upload" name="logo" accept="image/*" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Brand Colors</label>
+                    <input type="text" class="form-input" name="brand_colors" placeholder="e.g., Navy blue and gold, or hex codes #1e40af #f59e0b">
+                    <p class="form-hint">What colors represent your brand? We can also pick for you based on your logo.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Upload Photos/Images</label>
+                    <div class="file-upload" onclick="document.getElementById('photos-upload').click()">
+                        <div class="upload-icon">🖼️</div>
+                        <div><strong>Click to upload</strong> or drag and drop</div>
+                        <div class="form-hint">Photos of your business, products, team, etc. (We can also use stock photos)</div>
+                        <input type="file" id="photos-upload" name="photos" accept="image/*" multiple>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Competitor/Inspiration Websites</label>
+                    <textarea class="form-textarea" name="inspiration_sites" placeholder="Paste 2-3 website URLs that you like the style of..."></textarea>
+                    <p class="form-hint">This helps us understand your design preferences.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Design Style Preference</label>
+                    <select class="form-select" name="design_style">
+                        <option value="">No preference (you choose)</option>
+                        <option value="modern">Modern & Minimalist</option>
+                        <option value="bold">Bold & Colorful</option>
+                        <option value="professional">Professional & Corporate</option>
+                        <option value="creative">Creative & Unique</option>
+                        <option value="elegant">Elegant & Sophisticated</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary prev-step">← Back</button>
+                    <button type="button" class="btn btn-primary next-step">Next: Technical →</button>
+                </div>
+            </div>
+            
+            <!-- Step 4: Technical -->
+            <div class="form-section" data-section="4">
+                <h2 class="section-title">Technical Details</h2>
+                <p class="section-subtitle">Let's get the technical stuff sorted out.</p>
+                
+                <div class="form-group">
+                    <label class="form-label">Domain Name <span class="required">*</span></label>
+                    <input type="text" class="form-input" name="domain" required placeholder="e.g., yourbusiness.com">
+                    <p class="form-hint">Already own it? We'll help you point it. Don't have one yet? We'll help you register it.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Do you own this domain already?</label>
+                    <select class="form-select" name="domain_status">
+                        <option value="need">No, I need to register it</option>
+                        <option value="own">Yes, I already own it</option>
+                        <option value="transfer">I own it but want to transfer</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Email Address for Admin Access <span class="required">*</span></label>
+                    <input type="email" class="form-input" name="admin_email" required placeholder="your@email.com">
+                    <p class="form-hint">We'll send login credentials and updates to this email.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Special Features Needed?</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="features[]" value="booking">
+                            <span>Booking/Scheduling System</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="features[]" value="ecommerce">
+                            <span>E-commerce/Online Store</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="features[]" value="blog">
+                            <span>Blog/News Section</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="features[]" value="forms">
+                            <span>Custom Forms (quotes, applications, etc.)</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="features[]" value="members">
+                            <span>Member/Login Area</span>
+                        </label>
+                        <label class="checkbox-item">
+                            <input type="checkbox" name="features[]" value="chat">
+                            <span>Live Chat Widget</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Anything else we should know?</label>
+                    <textarea class="form-textarea" name="additional_notes" placeholder="Any special requirements, features, or details we should know about..."></textarea>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary prev-step">← Back</button>
+                    <button type="button" class="btn btn-primary next-step">Next: Launch →</button>
+                </div>
+            </div>
+            
+            <!-- Step 5: Launch -->
+            <div class="form-section" data-section="5">
+                <h2 class="section-title">Launch Timeline</h2>
+                <p class="section-subtitle">When do you need your website live?</p>
+                
+                <div class="form-group">
+                    <label class="form-label">Launch Urgency <span class="required">*</span></label>
+                    <select class="form-select" name="urgency" required>
+                        <option value="">Select...</option>
+                        <option value="asap">ASAP - I need it in 24 hours</option>
+                        <option value="week">Within a week</option>
+                        <option value="flexible">Flexible - whenever you're ready</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Specific Launch Date?</label>
+                    <input type="date" class="form-input" name="launch_date">
+                    <p class="form-hint">If you have a specific date in mind (event, grand opening, etc.)</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Phone Number <span class="required">*</span></label>
+                    <input type="tel" class="form-input" name="phone" required placeholder="(555) 123-4567">
+                    <p class="form-hint">In case we need to reach you quickly with questions.</p>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Best way to communicate?</label>
+                    <select class="form-select" name="communication_preference">
+                        <option value="email">Email</option>
+                        <option value="phone">Phone Call</option>
+                        <option value="text">Text Message</option>
+                    </select>
+                </div>
+                
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary prev-step">← Back</button>
+                    <button type="submit" class="btn btn-success">Submit & Start Build 🚀</button>
+                </div>
+            </div>
+        </form>
+        
+        <!-- Success Message -->
+        <div class="success-message" id="success-message">
+            <div class="success-icon">🎉</div>
+            <h2>Submission Received!</h2>
+            <p>Thank you! We've received your information and will start building your website right away. You'll receive a preview within 24 hours at the email you provided.</p>
+            <p style="margin-top: 24px; font-size: 16px; color: var(--dark);">
+                <strong>What happens next:</strong><br>
+                1. We review your information<br>
+                2. We build your custom website<br>
+                3. We email you a preview link in 24 hours<br>
+                4. You request any changes<br>
+                5. We launch it live!
+            </p>
+            <p style="margin-top: 32px; color: var(--gray);">
+                Questions? Email us at <strong>support@reviewpilot.business</strong>
+            </p>
+        </div>
+    </div>
+    
+    <script>
+        let currentStep = 1;
+        const totalSteps = 5;
+        
+        // Navigation
+        document.querySelectorAll('.next-step').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const currentSection = document.querySelector(`.form-section[data-section="${currentStep}"]`);
+                const inputs = currentSection.querySelectorAll('[required]');
+                let valid = true;
+                
+                inputs.forEach(input => {
+                    if (!input.value) {
+                        valid = false;
+                        input.style.borderColor = '#ef4444';
+                    } else {
+                        input.style.borderColor = '#e2e8f0';
+                    }
+                });
+                
+                if (valid && currentStep < totalSteps) {
+                    goToStep(currentStep + 1);
+                } else if (!valid) {
+                    alert('Please fill out all required fields.');
+                }
+            });
+        });
+        
+        document.querySelectorAll('.prev-step').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    goToStep(currentStep - 1);
+                }
+            });
+        });
+        
+        function goToStep(step) {
+            document.querySelector(`.form-section[data-section="${currentStep}"]`).classList.remove('active');
+            document.querySelector(`.progress-step[data-step="${currentStep}"]`).classList.remove('active');
+            document.querySelector(`.progress-step[data-step="${currentStep}"]`).classList.add('completed');
+            
+            currentStep = step;
+            
+            document.querySelector(`.form-section[data-section="${currentStep}"]`).classList.add('active');
+            document.querySelector(`.progress-step[data-step="${currentStep}"]`).classList.add('active');
+            
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // Form submission
+        document.getElementById('intake-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const data = {};
+            
+            formData.forEach((value, key) => {
+                if (key.endsWith('[]')) {
+                    const cleanKey = key.slice(0, -2);
+                    if (!data[cleanKey]) data[cleanKey] = [];
+                    data[cleanKey].push(value);
+                } else {
+                    data[key] = value;
+                }
+            });
+            
+            // Format as email
+            const emailBody = `
+NEW WEBSITE BUILD REQUEST
+
+=== BUSINESS INFO ===
+Business Name: ${data.business_name}
+Industry: ${data.industry}
+Description: ${data.business_description}
+Target Audience: ${data.target_audience || 'Not specified'}
+
+=== CONTENT ===
+Pages Needed: ${data.pages ? data.pages.join(', ') : 'Home'}
+Custom Pages: ${data.custom_pages || 'None'}
+Content Status: ${data.content_status}
+Products/Services: ${data.products_services || 'None specified'}
+
+=== DESIGN ===
+Brand Colors: ${data.brand_colors || 'Not specified'}
+Inspiration Sites: ${data.inspiration_sites || 'None'}
+Design Style: ${data.design_style || 'No preference'}
+
+=== TECHNICAL ===
+Domain: ${data.domain}
+Domain Status: ${data.domain_status}
+Admin Email: ${data.admin_email}
+Special Features: ${data.features ? data.features.join(', ') : 'None'}
+Additional Notes: ${data.additional_notes || 'None'}
+
+=== LAUNCH ===
+Urgency: ${data.urgency}
+Launch Date: ${data.launch_date || 'Flexible'}
+Phone: ${data.phone}
+Communication Preference: ${data.communication_preference}
+
+---
+Submitted: ${new Date().toLocaleString()}
+            `.trim();
+            
+            const subject = encodeURIComponent(`New Website Build: ${data.business_name}`);
+            const body = encodeURIComponent(emailBody);
+            
+            // Open mailto (you can replace this with actual backend submission later)
+            window.location.href = `mailto:rustbuyer101@gmail.com?subject=${subject}&body=${body}`;
+            
+            // Show success message
+            setTimeout(() => {
+                document.getElementById('intake-form').style.display = 'none';
+                document.querySelector('.progress-bar').style.display = 'none';
+                document.getElementById('success-message').classList.add('show');
+            }, 1000);
+        });
+        
+        // File upload preview
+        document.querySelectorAll('.file-upload input').forEach(input => {
+            input.addEventListener('change', (e) => {
+                const fileCount = e.target.files.length;
+                const uploadDiv = e.target.closest('.file-upload');
+                if (fileCount > 0) {
+                    uploadDiv.querySelector('.upload-icon').textContent = '✅';
+                    uploadDiv.querySelector('strong').textContent = `${fileCount} file(s) selected`;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
