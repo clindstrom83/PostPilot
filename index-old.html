@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ReviewPilot - AI-Powered Google Review Response Automation</title>
+  <meta name="description" content="Stop wasting hours responding to Google reviews. AI writes professional responses in 30 seconds. Auto-posts to Google Business Profile.">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      --gradient-accent: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      --gradient-success: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      --dark: #1a1a2e;
+      --darker: #0f0f1e;
+      --text: #e4e4e7;
+      --text-muted: #a1a1aa;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --border: rgba(255, 255, 255, 0.1);
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background: var(--darker);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    .bg-animated {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      background: var(--darker);
+    }
+
+    .bg-animated::before,
+    .bg-animated::after {
+      content: '';
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    .bg-animated::before {
+      background: var(--gradient-primary);
+      top: -200px;
+      right: -200px;
+      animation-delay: 0s;
+    }
+
+    .bg-animated::after {
+      background: var(--gradient-accent);
+      bottom: -200px;
+      left: -200px;
+      animation-delay: 10s;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(50px, 50px) scale(1.1); }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      padding: 20px 0;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 24px;
+      font-weight: 800;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header-nav {
+      display: flex;
+      gap: 30px;
+      align-items: center;
+    }
+
+    .header-nav a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .header-nav a:hover {
+      color: #667eea;
+    }
+
+    .hero {
+      padding: 80px 0 120px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 56px;
+      font-weight: 900;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero h1 span {
+      display: block;
+    }
+
+    .hero p {
+      font-size: 20px;
+      color: var(--text-muted);
+      margin-bottom: 40px;
+      max-width: 700px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .cta-buttons {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 16px 32px;
+      font-size: 16px;
+      font-weight: 600;
+      border-radius: 12px;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: var(--gradient-primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-secondary {
+      background: var(--card-bg);
+      color: var(--text);
+      border: 2px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      border-color: #667eea;
+      background: rgba(102, 126, 234, 0.1);
+    }
+
+    .trust-badges {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    .trust-badges span {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .badge-icon {
+      width: 20px;
+      height: 20px;
+      background: var(--gradient-success);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    .demo-section {
+      padding: 80px 0;
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .demo-section h2 {
+      font-size: 40px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .demo-section p {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 50px;
+    }
+
+    .demo-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: var(--darker);
+      border-radius: 16px;
+      padding: 30px;
+      border: 1px solid var(--border);
+    }
+
+    .demo-input {
+      margin-bottom: 30px;
+    }
+
+    .demo-input label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .demo-input textarea {
+      width: 100%;
+      padding: 15px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+      resize: vertical;
+      min-height: 120px;
+    }
+
+    .demo-input select {
+      width: 100%;
+      padding: 15px;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .demo-output {
+      background: var(--card-bg);
+      border-radius: 8px;
+      padding: 20px;
+      margin-top: 20px;
+      border: 1px solid var(--border);
+    }
+
+    .demo-output h4 {
+      margin-bottom: 10px;
+      color: #4facfe;
+    }
+
+    .demo-output p {
+      color: var(--text);
+      line-height: 1.6;
+      text-align: left;
+    }
+
+    .loading {
+      text-align: center;
+      color: var(--text-muted);
+      padding: 30px;
+    }
+
+    .pricing-section {
+      padding: 80px 0;
+    }
+
+    .pricing-section h2 {
+      font-size: 40px;
+      text-align: center;
+      margin-bottom: 10px;
+    }
+
+    .pricing-section > p {
+      text-align: center;
+      color: var(--text-muted);
+      margin-bottom: 50px;
+    }
+
+    .pricing-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .pricing-card {
+      background: var(--card-bg);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 40px;
+      position: relative;
+      transition: all 0.3s;
+    }
+
+    .pricing-card:hover {
+      transform: translateY(-5px);
+      border-color: #667eea;
+      box-shadow: 0 20px 40px rgba(102, 126, 234, 0.2);
+    }
+
+    .pricing-card.featured {
+      border-color: #667eea;
+      background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    }
+
+    .badge {
+      position: absolute;
+      top: -15px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gradient-primary);
+      color: white;
+      padding: 6px 20px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .pricing-card h3 {
+      font-size: 24px;
+      margin-bottom: 10px;
+    }
+
+    .price {
+      font-size: 48px;
+      font-weight: 900;
+      margin-bottom: 5px;
+    }
+
+    .price span {
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text-muted);
+    }
+
+    .trial-info {
+      color: var(--text-muted);
+      font-size: 14px;
+      margin-bottom: 30px;
+    }
+
+    .features {
+      list-style: none;
+      margin-bottom: 30px;
+    }
+
+    .features li {
+      padding: 10px 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .features li::before {
+      content: '✓';
+      color: #4facfe;
+      font-weight: bold;
+      font-size: 18px;
+    }
+
+    footer {
+      padding: 40px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 80px;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 30px;
+    }
+
+    .footer-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    .footer-links a:hover {
+      color: var(--text);
+    }
+
+    footer p {
+      color: var(--text-muted);
+      font-size: 14px;
+    }
+
+    @media (max-width: 768px) {
+      .hero h1 {
+        font-size: 36px;
+      }
+
+      .hero p {
+        font-size: 16px;
+      }
+
+      .pricing-cards {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-content {
+        flex-direction: column;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-animated"></div>
+
+  <header>
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">ReviewPilot</div>
+        <nav class="header-nav">
+          <a href="#pricing">Pricing</a>
+          <a href="#demo">Try Demo</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>
+        <span>Never Stress About</span>
+        <span>Google Reviews Again</span>
+      </h1>
+      <p>AI monitors your Google Business Profile 24/7 and generates professional responses to every review in 30 seconds. Approve and post directly from your dashboard.</p>
+      <div class="cta-buttons">
+        <a href="/signup.html" class="btn btn-primary">Start Free Trial</a>
+        <a href="#demo" class="btn btn-secondary">See Demo</a>
+      </div>
+      <div class="trust-badges">
+        <span><div class="badge-icon">✓</div> 7-day free trial</span>
+        <span><div class="badge-icon">✓</div> No credit card required</span>
+        <span><div class="badge-icon">✓</div> Cancel anytime</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="demo-section" id="demo">
+    <div class="container">
+      <h2>See It In Action</h2>
+      <p>Paste any Google review below and watch AI generate the perfect response</p>
+      
+      <div class="demo-container">
+        <div class="demo-input">
+          <label>Paste a Google Review:</label>
+          <textarea id="reviewInput" placeholder="Example: 'Terrible service! Waited 45 minutes for food and it was cold. Server was rude. Never coming back!'"></textarea>
+        </div>
+
+        <div class="demo-input">
+          <label>Response Tone:</label>
+          <select id="toneSelect">
+            <option value="professional">Professional</option>
+            <option value="apologetic">Apologetic & Empathetic</option>
+            <option value="friendly">Friendly & Casual</option>
+          </select>
+        </div>
+
+        <button class="btn btn-primary" onclick="generateDemo()" style="width: 100%;">Generate AI Response</button>
+
+        <div id="demoOutput"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing-section" id="pricing">
+    <div class="container">
+      <h2>Simple, Transparent Pricing</h2>
+      <p>Start free, upgrade when you're ready</p>
+      
+      <div class="pricing-cards">
+        <div class="pricing-card featured">
+          <div class="badge">Most Popular</div>
+          <h3>Starter</h3>
+          <div class="price">$49<span>/month</span></div>
+          <div class="trial-info">7-day free trial included</div>
+          <ul class="features">
+            <li>50 AI review responses per month</li>
+            <li>Google Business Profile integration</li>
+            <li>Auto-monitor new reviews 24/7</li>
+            <li>Multiple tone options</li>
+            <li>1-click approve & post</li>
+            <li>Email notifications</li>
+            <li>Email support</li>
+          </ul>
+          <a href="/signup.html" class="btn btn-primary" style="width: 100%; text-align: center;">Start Free Trial</a>
+        </div>
+
+        <div class="pricing-card">
+          <h3>Pro</h3>
+          <div class="price">$99<span>/month</span></div>
+          <div class="trial-info">Coming soon</div>
+          <ul class="features">
+            <li>150 AI review responses per month</li>
+            <li>Multiple business locations</li>
+            <li>Auto-post without approval (optional)</li>
+            <li>Advanced sentiment analysis</li>
+            <li>Custom response templates</li>
+            <li>Analytics dashboard</li>
+            <li>Priority support</li>
+          </ul>
+          <button class="btn btn-secondary" style="width: 100%;" disabled>Coming Soon</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-links">
+          <a href="/contact.html">Contact</a>
+          <a href="/terms.html">Terms of Service</a>
+          <a href="/privacy.html">Privacy Policy</a>
+        </div>
+        <p>&copy; 2026 ReviewPilot. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    async function generateDemo() {
+      const reviewText = document.getElementById('reviewInput').value.trim();
+      const tone = document.getElementById('toneSelect').value;
+      const outputDiv = document.getElementById('demoOutput');
+
+      if (!reviewText) {
+        alert('Please paste a review first!');
+        return;
+      }
+
+      outputDiv.innerHTML = '<div class="loading">Generating AI response...</div>';
+
+      try {
+        const response = await fetch('/.netlify/functions/generate-review-response', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ reviewText, tone })
+        });
+
+        const data = await response.json();
+
+        if (data.response) {
+          outputDiv.innerHTML = `
+            <div class="demo-output">
+              <h4>AI-Generated Response (${tone}):</h4>
+              <p>${data.response}</p>
+            </div>
+          `;
+        } else {
+          outputDiv.innerHTML = '<div class="demo-output"><p>Error generating response. Please try again.</p></div>';
+        }
+      } catch (error) {
+        outputDiv.innerHTML = '<div class="demo-output"><p>Error: ' + error.message + '</p></div>';
+      }
+    }
+
+  </script>
+</body>
+</html>
