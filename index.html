@@ -585,8 +585,845 @@
         </div>
     </section>
 
-    <!-- CTA Section -->
-    <section class="cta-section" id="pricing">
+<!-- Pricing Section -->
+<section class="pricing-section" id="pricing">
+    <div class="container">
+        <h2>Simple, Transparent Pricing</h2>
+        <p class="pricing-subtitle">One-time setup fee + affordable monthly subscription. No hidden costs, no surprises.</p>
+        
+        <div class="pricing-grid">
+            <!-- Starter -->
+            <div class="pricing-card">
+                <div class="plan-name">Starter</div>
+                <div class="plan-price">
+                    <span class="setup-price">$297</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$39</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">Perfect for simple business sites</div>
+                
+                <ul class="features-list">
+                    <li>✓ Up to 5 pages</li>
+                    <li>✓ Mobile responsive design</li>
+                    <li>✓ Contact form</li>
+                    <li>✓ Basic SEO setup</li>
+                    <li>✓ 5 stock photos included</li>
+                    <li>✓ 2 email accounts</li>
+                    <li>✓ Hosting & SSL included</li>
+                    <li>✓ Domain setup assistance</li>
+                    <li><strong>✓ 1 update per month</strong></li>
+                    <li>✓ 48-hour email support</li>
+                </ul>
+                
+                <a href="/signup.html?plan=starter" class="plan-button">Get Started</a>
+                
+                <div class="plan-note">Great for landing pages, portfolios, simple business sites</div>
+            </div>
+            
+            <!-- Pro (Most Popular) -->
+            <div class="pricing-card featured">
+                <div class="popular-badge">MOST POPULAR</div>
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">
+                    <span class="setup-price">$497</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$49</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">For growing businesses that need flexibility</div>
+                
+                <ul class="features-list">
+                    <li>✓ Up to 10 pages</li>
+                    <li>✓ Everything in Starter, PLUS:</li>
+                    <li><strong>✓ 4 updates per month</strong></li>
+                    <li>✓ E-commerce (up to 50 products)</li>
+                    <li>✓ Booking/scheduling system</li>
+                    <li>✓ Blog setup & management</li>
+                    <li>✓ Google Analytics integration</li>
+                    <li>✓ Social media integration</li>
+                    <li>✓ 20 stock photos included</li>
+                    <li>✓ 5 email accounts</li>
+                    <li>✓ Onboarding training call</li>
+                    <li>✓ 24-hour email support</li>
+                    <li>✓ Priority handling</li>
+                </ul>
+                
+                <a href="/signup.html?plan=pro" class="plan-button primary">Get Started</a>
+                
+                <div class="plan-note">Perfect for restaurants, gyms, coaches, consultants, online stores</div>
+            </div>
+            
+            <!-- Enterprise -->
+            <div class="pricing-card premium">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-price">
+                    <span class="setup-price">$997</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$99</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">Unlimited everything. White-glove service.</div>
+                
+                <ul class="features-list">
+                    <li>✓ UNLIMITED pages</li>
+                    <li>✓ Everything in Pro, PLUS:</li>
+                    <li><strong>✓ UNLIMITED updates</strong></li>
+                    <li class="highlight">Email us anytime with ANY request</li>
+                    <li>✓ Advanced e-commerce (unlimited products)</li>
+                    <li>✓ Custom features & integrations</li>
+                    <li>✓ Coupon/discount code systems</li>
+                    <li>✓ Member/login areas</li>
+                    <li>✓ Complete site redesigns included</li>
+                    <li>✓ UNLIMITED stock photos</li>
+                    <li>✓ UNLIMITED email accounts</li>
+                    <li>✓ Dedicated account manager</li>
+                    <li>✓ 12-hour support response</li>
+                    <li>✓ Priority everything</li>
+                </ul>
+                
+                <a href="/signup.html?plan=enterprise" class="plan-button premium">Get Started</a>
+                
+                <div class="plan-note">For serious businesses that demand the best. No limits, no restrictions.</div>
+            </div>
+        </div>
+        
+        <div class="pricing-faq">
+            <h3>What counts as an "update"?</h3>
+            <p><strong>Anything you need changed on your site:</strong> Text edits, image swaps, new pages, removing/adding sections, changing colors, updating products, creating discount codes, site layout changes, adding features — literally any change you can think of.</p>
+            <p><strong>Why unlimited updates matter:</strong> Your business evolves. You'll want to add new products, update prices, announce promotions, refresh photos, add testimonials. With Pro (4/month) you can make changes weekly. With Enterprise (unlimited) you can make changes daily.</p>
+        </div>
+        
+        <div class="pricing-guarantee">
+            <div class="guarantee-icon">✅</div>
+            <div>
+                <h3>100% Money-Back Guarantee</h3>
+                <p>Not happy with your website? Full refund within 7 days. No questions asked.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.pricing-section {
+    padding: 80px 20px;
+    background: var(--white);
+}
+
+.pricing-section h2 {
+    font-size: 42px;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.pricing-subtitle {
+    text-align: center;
+    font-size: 18px;
+    color: var(--gray);
+    margin-bottom: 60px;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+}
+
+.pricing-card {
+    background: var(--white);
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 40px 32px;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-card.featured {
+    border-color: var(--primary);
+    border-width: 3px;
+    transform: scale(1.05);
+}
+
+.pricing-card.featured:hover {
+    transform: scale(1.05) translateY(-8px);
+}
+
+.pricing-card.premium {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: var(--white);
+    border: none;
+}
+
+.pricing-card.premium .plan-name,
+.pricing-card.premium .plan-description,
+.pricing-card.premium .features-list,
+.pricing-card.premium .plan-note {
+    color: var(--white);
+}
+
+.pricing-card.premium .setup-label,
+.pricing-card.premium .price-period {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.popular-badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: var(--white);
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+.plan-name {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.plan-price {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.setup-price {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--primary);
+}
+
+.pricing-card.premium .setup-price {
+    color: var(--white);
+}
+
+.setup-label {
+    display: block;
+    font-size: 14px;
+    color: var(--gray);
+    margin-top: 4px;
+}
+
+.monthly-price {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.price-amount {
+    font-size: 48px;
+    font-weight: 900;
+}
+
+.price-period {
+    font-size: 18px;
+    color: var(--gray);
+}
+
+.plan-description {
+    text-align: center;
+    color: var(--gray);
+    margin-bottom: 24px;
+    font-size: 15px;
+}
+
+.features-list {
+    list-style: none;
+    margin: 0 0 32px 0;
+    padding: 0;
+}
+
+.features-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.pricing-card.premium .features-list li {
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.features-list li strong {
+    color: var(--accent);
+    font-size: 16px;
+}
+
+.pricing-card.premium .features-list li strong {
+    color: #fbbf24;
+}
+
+.features-list li.highlight {
+    font-style: italic;
+    font-size: 14px;
+    padding-left: 16px;
+    color: var(--gray);
+}
+
+.pricing-card.premium .features-list li.highlight {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.plan-button {
+    display: block;
+    width: 100%;
+    background: var(--dark);
+    color: var(--white);
+    padding: 16px;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.3s;
+    border: none;
+}
+
+.plan-button:hover {
+    background: var(--primary);
+    transform: translateY(-2px);
+}
+
+.plan-button.primary {
+    background: var(--primary);
+}
+
+.plan-button.primary:hover {
+    background: var(--primary-dark);
+}
+
+.plan-button.premium {
+    background: var(--white);
+    color: var(--primary);
+}
+
+.plan-button.premium:hover {
+    background: #f8fafc;
+}
+
+.plan-note {
+    text-align: center;
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 16px;
+    font-style: italic;
+}
+
+.pricing-faq {
+    max-width: 800px;
+    margin: 60px auto 40px;
+    padding: 32px;
+    background: var(--light-gray);
+    border-radius: 16px;
+}
+
+.pricing-faq h3 {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    color: var(--dark);
+}
+
+.pricing-faq p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--dark);
+    margin-bottom: 16px;
+}
+
+.pricing-faq p:last-child {
+    margin-bottom: 0;
+}
+
+.pricing-guarantee {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 32px;
+    background: #f0fdf4;
+    border: 2px solid var(--accent);
+    border-radius: 16px;
+    text-align: left;
+}
+
+.guarantee-icon {
+    font-size: 48px;
+    flex-shrink: 0;
+}
+
+.pricing-guarantee h3 {
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    color: #065f46;
+}
+
+.pricing-guarantee p {
+    font-size: 16px;
+    color: #065f46;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-card.featured {
+        transform: scale(1);
+    }
+    
+    .pricing-card.featured:hover {
+        transform: translateY(-8px);
+    }
+    
+    .pricing-section h2 {
+        font-size: 32px;
+    }
+    
+    .pricing-guarantee {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>
+</style>
+<!-- Pricing Section -->
+<section class="pricing-section" id="pricing">
+    <div class="container">
+        <h2>Simple, Transparent Pricing</h2>
+        <p class="pricing-subtitle">One-time setup fee + affordable monthly subscription. No hidden costs, no surprises.</p>
+        
+        <div class="pricing-grid">
+            <!-- Starter -->
+            <div class="pricing-card">
+                <div class="plan-name">Starter</div>
+                <div class="plan-price">
+                    <span class="setup-price">$297</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$39</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">Perfect for simple business sites</div>
+                
+                <ul class="features-list">
+                    <li>✓ Up to 5 pages</li>
+                    <li>✓ Mobile responsive design</li>
+                    <li>✓ Contact form</li>
+                    <li>✓ Basic SEO setup</li>
+                    <li>✓ 5 stock photos included</li>
+                    <li>✓ 2 email accounts</li>
+                    <li>✓ Hosting & SSL included</li>
+                    <li>✓ Domain setup assistance</li>
+                    <li><strong>✓ 1 update per month</strong></li>
+                    <li>✓ 48-hour email support</li>
+                </ul>
+                
+                <a href="/signup.html?plan=starter" class="plan-button">Get Started</a>
+                
+                <div class="plan-note">Great for landing pages, portfolios, simple business sites</div>
+            </div>
+            
+            <!-- Pro (Most Popular) -->
+            <div class="pricing-card featured">
+                <div class="popular-badge">MOST POPULAR</div>
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">
+                    <span class="setup-price">$497</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$49</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">For growing businesses that need flexibility</div>
+                
+                <ul class="features-list">
+                    <li>✓ Up to 10 pages</li>
+                    <li>✓ Everything in Starter, PLUS:</li>
+                    <li><strong>✓ 4 updates per month</strong></li>
+                    <li>✓ E-commerce (up to 50 products)</li>
+                    <li>✓ Booking/scheduling system</li>
+                    <li>✓ Blog setup & management</li>
+                    <li>✓ Google Analytics integration</li>
+                    <li>✓ Social media integration</li>
+                    <li>✓ 20 stock photos included</li>
+                    <li>✓ 5 email accounts</li>
+                    <li>✓ Onboarding training call</li>
+                    <li>✓ 24-hour email support</li>
+                    <li>✓ Priority handling</li>
+                </ul>
+                
+                <a href="/signup.html?plan=pro" class="plan-button primary">Get Started</a>
+                
+                <div class="plan-note">Perfect for restaurants, gyms, coaches, consultants, online stores</div>
+            </div>
+            
+            <!-- Enterprise -->
+            <div class="pricing-card premium">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-price">
+                    <span class="setup-price">$997</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$99</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">Unlimited everything. White-glove service.</div>
+                
+                <ul class="features-list">
+                    <li>✓ UNLIMITED pages</li>
+                    <li>✓ Everything in Pro, PLUS:</li>
+                    <li><strong>✓ UNLIMITED updates</strong></li>
+                    <li class="highlight">Email us anytime with ANY request</li>
+                    <li>✓ Advanced e-commerce (unlimited products)</li>
+                    <li>✓ Custom features & integrations</li>
+                    <li>✓ Coupon/discount code systems</li>
+                    <li>✓ Member/login areas</li>
+                    <li>✓ Complete site redesigns included</li>
+                    <li>✓ UNLIMITED stock photos</li>
+                    <li>✓ UNLIMITED email accounts</li>
+                    <li>✓ Dedicated account manager</li>
+                    <li>✓ 12-hour support response</li>
+                    <li>✓ Priority everything</li>
+                </ul>
+                
+                <a href="/signup.html?plan=enterprise" class="plan-button premium">Get Started</a>
+                
+                <div class="plan-note">For serious businesses that demand the best. No limits, no restrictions.</div>
+            </div>
+        </div>
+        
+        <div class="pricing-faq">
+            <h3>What counts as an "update"?</h3>
+            <p><strong>Anything you need changed on your site:</strong> Text edits, image swaps, new pages, removing/adding sections, changing colors, updating products, creating discount codes, site layout changes, adding features — literally any change you can think of.</p>
+            <p><strong>Why unlimited updates matter:</strong> Your business evolves. You'll want to add new products, update prices, announce promotions, refresh photos, add testimonials. With Pro (4/month) you can make changes weekly. With Enterprise (unlimited) you can make changes daily.</p>
+        </div>
+        
+        <div class="pricing-guarantee">
+            <div class="guarantee-icon">✅</div>
+            <div>
+                <h3>100% Money-Back Guarantee</h3>
+                <p>Not happy with your website? Full refund within 7 days. No questions asked.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.pricing-section {
+    padding: 80px 20px;
+    background: var(--white);
+}
+
+.pricing-section h2 {
+    font-size: 42px;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.pricing-subtitle {
+    text-align: center;
+    font-size: 18px;
+    color: var(--gray);
+    margin-bottom: 60px;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+}
+
+.pricing-card {
+    background: var(--white);
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 40px 32px;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-card.featured {
+    border-color: var(--primary);
+    border-width: 3px;
+    transform: scale(1.05);
+}
+
+.pricing-card.featured:hover {
+    transform: scale(1.05) translateY(-8px);
+}
+
+.pricing-card.premium {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: var(--white);
+    border: none;
+}
+
+.pricing-card.premium .plan-name,
+.pricing-card.premium .plan-description,
+.pricing-card.premium .features-list,
+.pricing-card.premium .plan-note {
+    color: var(--white);
+}
+
+.pricing-card.premium .setup-label,
+.pricing-card.premium .price-period {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.popular-badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: var(--white);
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+.plan-name {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.plan-price {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.setup-price {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--primary);
+}
+
+.pricing-card.premium .setup-price {
+    color: var(--white);
+}
+
+.setup-label {
+    display: block;
+    font-size: 14px;
+    color: var(--gray);
+    margin-top: 4px;
+}
+
+.monthly-price {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.price-amount {
+    font-size: 48px;
+    font-weight: 900;
+}
+
+.price-period {
+    font-size: 18px;
+    color: var(--gray);
+}
+
+.plan-description {
+    text-align: center;
+    color: var(--gray);
+    margin-bottom: 24px;
+    font-size: 15px;
+}
+
+.features-list {
+    list-style: none;
+    margin: 0 0 32px 0;
+    padding: 0;
+}
+
+.features-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.pricing-card.premium .features-list li {
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.features-list li strong {
+    color: var(--accent);
+    font-size: 16px;
+}
+
+.pricing-card.premium .features-list li strong {
+    color: #fbbf24;
+}
+
+.features-list li.highlight {
+    font-style: italic;
+    font-size: 14px;
+    padding-left: 16px;
+    color: var(--gray);
+}
+
+.pricing-card.premium .features-list li.highlight {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.plan-button {
+    display: block;
+    width: 100%;
+    background: var(--dark);
+    color: var(--white);
+    padding: 16px;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.3s;
+    border: none;
+}
+
+.plan-button:hover {
+    background: var(--primary);
+    transform: translateY(-2px);
+}
+
+.plan-button.primary {
+    background: var(--primary);
+}
+
+.plan-button.primary:hover {
+    background: var(--primary-dark);
+}
+
+.plan-button.premium {
+    background: var(--white);
+    color: var(--primary);
+}
+
+.plan-button.premium:hover {
+    background: #f8fafc;
+}
+
+.plan-note {
+    text-align: center;
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 16px;
+    font-style: italic;
+}
+
+.pricing-faq {
+    max-width: 800px;
+    margin: 60px auto 40px;
+    padding: 32px;
+    background: var(--light-gray);
+    border-radius: 16px;
+}
+
+.pricing-faq h3 {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    color: var(--dark);
+}
+
+.pricing-faq p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--dark);
+    margin-bottom: 16px;
+}
+
+.pricing-faq p:last-child {
+    margin-bottom: 0;
+}
+
+.pricing-guarantee {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 32px;
+    background: #f0fdf4;
+    border: 2px solid var(--accent);
+    border-radius: 16px;
+    text-align: left;
+}
+
+.guarantee-icon {
+    font-size: 48px;
+    flex-shrink: 0;
+}
+
+.pricing-guarantee h3 {
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    color: #065f46;
+}
+
+.pricing-guarantee p {
+    font-size: 16px;
+    color: #065f46;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-card.featured {
+        transform: scale(1);
+    }
+    
+    .pricing-card.featured:hover {
+        transform: translateY(-8px);
+    }
+    
+    .pricing-section h2 {
+        font-size: 32px;
+    }
+    
+    .pricing-guarantee {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>
         <div class="container">
             <h2>Ready to Get Your Website Built?</h2>
             <p>One-time setup fee + affordable monthly subscription. No long-term contracts, cancel anytime.</p>
