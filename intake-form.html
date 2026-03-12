@@ -666,8 +666,11 @@
                 5. We launch it live!
             </p>
             <p style="margin-top: 32px;">
-                <a href="/billing.html" style="display: inline-block; background: var(--primary); color: white; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; margin-bottom: 16px;">
-                    💳 Manage Your Billing
+                <a href="/dashboard.html" style="display: inline-block; background: var(--primary); color: white; padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; margin-right: 12px; margin-bottom: 16px;">
+                    📊 View Dashboard
+                </a>
+                <a href="/billing.html" style="display: inline-block; background: var(--light-gray); color: var(--dark); padding: 14px 28px; border-radius: 10px; text-decoration: none; font-weight: 700; margin-bottom: 16px;">
+                    💳 Manage Billing
                 </a>
             </p>
             <p style="margin-top: 16px; color: var(--gray);">
@@ -728,6 +731,26 @@
         // Form submission
         document.getElementById('intake-form').addEventListener('submit', async (e) => {
             e.preventDefault();
+            
+            // Create order in system
+            const urlParams = new URLSearchParams(window.location.search);
+            const sessionId = urlParams.get('session_id');
+            
+            if (sessionId) {
+                try {
+                    const orderResponse = await fetch('/.netlify/functions/create-order', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ sessionId })
+                    });
+                    
+                    if (!orderResponse.ok) {
+                        console.error('Failed to create order');
+                    }
+                } catch (error) {
+                    console.error('Order creation error:', error);
+                }
+            }
             
             const formData = new FormData(e.target);
             const data = {};
