@@ -365,7 +365,7 @@
                 
                 <div class="form-group">
                     <label class="form-label">Industry/Niche <span class="required">*</span></label>
-                    <select class="form-select" name="industry" required>
+                    <select class="form-select" name="industry" required id="industry-select">
                         <option value="">Select your industry...</option>
                         <option value="restaurant">Restaurant/Food Service</option>
                         <option value="fitness">Fitness/Gym</option>
@@ -376,8 +376,17 @@
                         <option value="professional">Professional Services (Law, Accounting, etc.)</option>
                         <option value="creative">Creative Services (Design, Photography, etc.)</option>
                         <option value="health">Healthcare/Wellness</option>
+                        <option value="medical">Medical/Dental</option>
+                        <option value="realestate">Real Estate</option>
+                        <option value="automotive">Automotive</option>
+                        <option value="education">Education/Training</option>
                         <option value="other">Other</option>
                     </select>
+                </div>
+                
+                <div class="form-group" id="industry-other-group" style="display:none;">
+                    <label class="form-label">Please specify your industry</label>
+                    <input type="text" class="form-input" name="industry_other" placeholder="e.g., Pet grooming, Podcast production, etc.">
                 </div>
                 
                 <div class="form-group">
@@ -483,19 +492,30 @@
                 </div>
                 
                 <div class="form-group">
+                    <label class="form-label">Your Vision</label>
+                    <textarea class="form-textarea" name="design_vision" rows="5" placeholder="Describe your dream website. What should it look like? What feeling should it give visitors? Any specific elements you want (sliders, videos, animations, etc.)?"></textarea>
+                    <p class="form-hint">The more detail, the better! Think colors, layout, style, vibe.</p>
+                </div>
+                
+                <div class="form-group">
                     <label class="form-label">Brand Colors</label>
                     <input type="text" class="form-input" name="brand_colors" placeholder="e.g., Navy blue and gold, or hex codes #1e40af #f59e0b">
                     <p class="form-hint">What colors represent your brand? We can also pick for you based on your logo.</p>
                 </div>
                 
                 <div class="form-group">
-                    <label class="form-label">Upload Photos/Images</label>
+                    <label class="form-label">Photos/Images</label>
                     <div class="file-upload" onclick="document.getElementById('photos-upload').click()">
                         <div class="upload-icon">🖼️</div>
                         <div><strong>Click to upload</strong> or drag and drop</div>
-                        <div class="form-hint">Photos of your business, products, team, etc. (We can also use stock photos)</div>
+                        <div class="form-hint">Photos of your business, products, team, etc.</div>
                         <input type="file" id="photos-upload" name="photos" accept="image/*" multiple>
                     </div>
+                    <p class="form-hint" style="margin-top: 12px;">
+                        <strong>Have lots of photos?</strong> Email them to: 
+                        <a href="mailto:photos@reviewpilot.business" style="color: var(--primary);">photos@reviewpilot.business</a>
+                        <br><small>(Include your business name in the subject line)</small>
+                    </p>
                 </div>
                 
                 <div class="form-group">
@@ -772,6 +792,16 @@ Submitted: ${new Date().toLocaleString()}
                 document.querySelector('.progress-bar').style.display = 'none';
                 document.getElementById('success-message').classList.add('show');
             }, 1000);
+        });
+        
+        // Industry "Other" field toggle
+        document.getElementById('industry-select').addEventListener('change', (e) => {
+            const otherGroup = document.getElementById('industry-other-group');
+            if (e.target.value === 'other') {
+                otherGroup.style.display = 'block';
+            } else {
+                otherGroup.style.display = 'none';
+            }
         });
         
         // File upload preview
