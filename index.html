@@ -398,25 +398,133 @@
             color: var(--gray);
         }
         
+        /* Mobile Sticky CTA Bar */
+        .mobile-cta-bar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            padding: 12px 20px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+        }
+        
+        .mobile-cta-bar .cta-button {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            border-radius: 12px;
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
+            /* Show mobile sticky CTA */
+            .mobile-cta-bar {
+                display: block;
+            }
+            
+            /* Add padding to body so content doesn't hide behind sticky CTA */
+            body {
+                padding-bottom: 80px;
+            }
+            
+            /* Header optimizations */
+            header {
+                padding: 12px 0;
+            }
+            
+            .header-content > div:nth-child(2) {
+                display: none !important; /* Hide email/call button on mobile */
+            }
+            
+            .header-content > a {
+                padding: 10px 18px !important;
+                font-size: 15px !important;
+            }
+            
+            /* Hero - compact for mobile */
+            .hero {
+                padding: 50px 20px 60px;
+            }
+            
             .hero h1 {
-                font-size: 36px;
+                font-size: 40px;
+                line-height: 1.15;
+                margin-bottom: 20px;
             }
             
             .hero .subtitle {
-                font-size: 18px;
+                font-size: 19px;
+                line-height: 1.4;
+                margin-bottom: 24px;
             }
             
+            .hero .handmade-badge {
+                font-size: 13px;
+                padding: 10px 18px;
+                margin-bottom: 24px;
+            }
+            
+            .hero .cta-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .hero .cta-button {
+                width: 100%;
+                padding: 18px;
+                font-size: 18px;
+                border-radius: 12px;
+            }
+            
+            /* Section headings more compact */
             .problem-section h2,
             .solution-section h2,
             .how-it-works h2,
             .portfolio-preview h2 {
                 font-size: 32px;
+                line-height: 1.2;
             }
             
-            .hero .cta-group {
-                flex-direction: column;
+            /* Trust badges */
+            .badges-grid {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+            
+            .badge-item {
+                padding: 14px !important;
+            }
+            
+            /* Container padding */
+            .container {
+                padding: 0 16px;
+            }
+            
+            /* All section padding */
+            section {
+                padding: 50px 0 !important;
+            }
+            
+            .trust-badges {
+                padding: 30px 0 !important;
+            }
+        }
+        
+        /* Small phones (<400px) */
+        @media (max-width: 400px) {
+            .hero h1 {
+                font-size: 34px;
+            }
+            
+            .hero .subtitle {
+                font-size: 17px;
+            }
+            
+            .logo {
+                font-size: 20px;
             }
         }
     </style>
@@ -1491,5 +1599,10 @@
             </p>
         </div>
     </footer>
+
+    <!-- Mobile Sticky CTA Bar (mobile only) -->
+    <div class="mobile-cta-bar">
+        <a href="/signup.html" class="cta-button">Get Your Website Now →</a>
+    </div>
 </body>
 </html>
