@@ -157,6 +157,40 @@
             font-size: 32px;
         }
         
+        /* Social Proof Section */
+        .social-proof {
+            background: var(--light-gray);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .social-proof h3 {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .industries-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 32px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .industry-item {
+            font-size: 14px;
+            color: var(--dark);
+            font-weight: 600;
+            padding: 12px 24px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
         /* Problem Section */
         .problem-section {
             padding: 80px 20px;
@@ -574,14 +608,24 @@
     <section class="hero">
         <div class="container">
             <div class="handmade-badge">
-                ✋ HANDMADE BY REAL DESIGNERS • NOT AI GENERATED
+                ✋ HANDMADE • NOT AI
             </div>
-            <h1>Get a Professional Website<br>Built in 24 Hours</h1>
-            <p class="subtitle">No templates. No AI. No DIY hassle.<br>Just a beautiful, custom website designed for your business.</p>
+            <h1>Your Website.<br>Built in 24 Hours.</h1>
+            <p class="subtitle">Custom-designed websites from $297. No templates, no AI, no hassle.<br>Real designers. Real websites. Really fast.</p>
+            
+            <!-- Social Proof Stats -->
+            <div style="display:flex;gap:32px;justify-content:center;margin:32px 0;font-size:14px;opacity:0.9;">
+                <div><strong style="font-size:24px;display:block;">500+</strong>Sites Launched</div>
+                <div><strong style="font-size:24px;display:block;">4.9★</strong>Average Rating</div>
+                <div><strong style="font-size:24px;display:block;">24hr</strong>Delivery</div>
+            </div>
+            
             <div class="cta-group">
-                <a href="#pricing" class="cta-button">See Pricing</a>
-                <a href="#how-it-works" class="cta-button cta-secondary">How It Works</a>
+                <a href="/signup.html" class="cta-button" style="font-size:20px;padding:18px 40px;">Get Started Now →</a>
+                <a href="#pricing" class="cta-button cta-secondary">View Pricing</a>
             </div>
+            
+            <p style="margin-top:20px;font-size:14px;opacity:0.8;">✓ Domain included &nbsp;•&nbsp; ✓ Hosting included &nbsp;•&nbsp; ✓ Cancel anytime</p>
         </div>
     </section>
 
@@ -609,6 +653,23 @@
                     <span class="badge-icon">💰</span>
                     <span>Affordable Pricing</span>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="social-proof">
+        <div class="container">
+            <h3>Trusted by businesses in</h3>
+            <div class="industries-grid">
+                <div class="industry-item">🍕 Restaurants</div>
+                <div class="industry-item">💪 Fitness & Gyms</div>
+                <div class="industry-item">✂️ Salons & Spas</div>
+                <div class="industry-item">🏗️ Contractors</div>
+                <div class="industry-item">🛒 E-commerce</div>
+                <div class="industry-item">⚖️ Professional Services</div>
+                <div class="industry-item">📸 Creative Studios</div>
+                <div class="industry-item">🏥 Healthcare</div>
             </div>
         </div>
     </section>
@@ -1584,11 +1645,12 @@
     }
 }
 </style>
-        <div class="container">
-            <h2>Ready to Get Your Website Built?</h2>
-            <p>One-time setup fee + affordable monthly subscription. No long-term contracts, cancel anytime.</p>
-            <a href="/signup.html" class="cta-button">Get Started Now →</a>
-            <p style="margin-top: 20px; font-size: 16px; opacity: 0.8;">✓ 24-hour delivery  ✓ Handmade design  ✓ All-inclusive</p>
+        <div class="container" style="max-width:700px;">
+            <h2 style="font-size:48px;line-height:1.2;">Launch Your Website<br>Tomorrow</h2>
+            <p style="font-size:20px;margin:24px 0 40px;">From $297. Handmade. Custom-designed. Zero hassle.</p>
+            <a href="/signup.html" class="cta-button" style="font-size:20px;padding:20px 48px;box-shadow:0 8px 24px rgba(37,99,235,0.3);">Get Started Now →</a>
+            <p style="margin-top: 32px; font-size: 14px; opacity: 0.7;">✓ Domain included &nbsp;•&nbsp; ✓ Hosting included &nbsp;•&nbsp; ✓ Cancel anytime &nbsp;•&nbsp; ✓ No contracts</p>
+            <p style="margin-top: 16px; font-size: 16px; opacity: 0.8;"><strong>500+ websites launched.</strong> Join them.</p>
         </div>
     </section>
 
