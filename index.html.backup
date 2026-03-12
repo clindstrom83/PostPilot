@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReviewPilot - Handmade Websites Built in 24 Hours</title>
+    <meta name="description" content="Get a professionally designed, handmade website built in 24 hours. No AI templates, no DIY hassle. From $397 + $39/month.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: var(--white);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+        
+        .cta-button {
+            background: var(--primary);
+            color: var(--white);
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        
+        .cta-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: var(--white);
+            padding: 100px 20px;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 56px;
+            font-weight: 900;
+            margin-bottom: 24px;
+            line-height: 1.1;
+        }
+        
+        .hero .subtitle {
+            font-size: 24px;
+            margin-bottom: 16px;
+            opacity: 0.95;
+        }
+        
+        .hero .handmade-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 40px;
+        }
+        
+        .hero .cta-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .hero .cta-button {
+            font-size: 18px;
+            padding: 16px 32px;
+        }
+        
+        .hero .cta-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid var(--white);
+        }
+        
+        .hero .cta-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Trust Badges */
+        .trust-badges {
+            background: var(--white);
+            padding: 40px 20px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .badge-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            font-weight: 600;
+            color: var(--gray);
+        }
+        
+        .badge-icon {
+            font-size: 32px;
+        }
+        
+        /* Social Proof Section */
+        .social-proof {
+            background: var(--light-gray);
+            padding: 40px 20px;
+            text-align: center;
+        }
+        
+        .social-proof h3 {
+            font-size: 16px;
+            color: var(--gray);
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .industries-grid {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 32px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .industry-item {
+            font-size: 14px;
+            color: var(--dark);
+            font-weight: 600;
+            padding: 12px 24px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        /* Problem Section */
+        .problem-section {
+            padding: 80px 20px;
+            background: var(--light-gray);
+        }
+        
+        .problem-section h2 {
+            font-size: 42px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+        }
+        
+        .problem-card {
+            background: var(--white);
+            padding: 32px;
+            border-radius: 16px;
+            border: 2px solid #e2e8f0;
+        }
+        
+        .problem-card .icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+        
+        .problem-card h3 {
+            font-size: 24px;
+            font-weight: 900;
+            margin-bottom: 12px;
+            color: #ef4444;
+        }
+        
+        .problem-card p {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+        
+        /* Solution Section */
+        .solution-section {
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .solution-section h2 {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 24px;
+        }
+        
+        .solution-section .subtitle {
+            font-size: 20px;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto 60px;
+        }
+        
+        .solution-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+        
+        .solution-card {
+            text-align: center;
+        }
+        
+        .solution-card .icon {
+            font-size: 56px;
+            margin-bottom: 20px;
+        }
+        
+        .solution-card h3 {
+            font-size: 22px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+        
+        .solution-card p {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+        
+        /* How It Works */
+        .how-it-works {
+            padding: 80px 20px;
+            background: var(--light-gray);
+        }
+        
+        .how-it-works h2 {
+            font-size: 42px;
+            font-weight: 900;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+        
+        .step-card {
+            background: var(--white);
+            padding: 32px;
+            border-radius: 16px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .step-number {
+            position: absolute;
+            top: -20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--primary);
+            color: var(--white);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 900;
+        }
+        
+        .step-card h3 {
+            font-size: 22px;
+            font-weight: 900;
+            margin: 20px 0 12px;
+        }
+        
+        .step-card p {
+            color: var(--gray);
+            line-height: 1.8;
+        }
+        
+        /* Portfolio Preview */
+        .portfolio-preview {
+            padding: 80px 20px;
+            text-align: center;
+        }
+        
+        .portfolio-preview h2 {
+            font-size: 42px;
+            font-weight: 900;
+            margin-bottom: 60px;
+        }
+        
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+        
+        .portfolio-item {
+            background: var(--light-gray);
+            border-radius: 16px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+            transition: transform 0.3s;
+        }
+        
+        .portfolio-item:hover {
+            transform: translateY(-8px);
+        }
+        
+        .portfolio-image {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+        
+        .portfolio-info {
+            padding: 24px;
+            text-align: left;
+        }
+        
+        .portfolio-info h3 {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 8px;
+        }
+        
+        .portfolio-info p {
+            color: var(--gray);
+        }
+        
+        /* CTA Section */
+        .cta-section {
+            background: var(--dark);
+            color: var(--white);
+            padding: 100px 20px;
+            text-align: center;
+        }
+        
+        .cta-section h2 {
+            font-size: 48px;
+            font-weight: 900;
+            margin-bottom: 24px;
+        }
+        
+        .cta-section p {
+            font-size: 20px;
+            opacity: 0.9;
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cta-section .cta-button {
+            background: var(--accent);
+            font-size: 20px;
+            padding: 18px 40px;
+        }
+        
+        .cta-section .cta-button:hover {
+            background: #059669;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--white);
+            padding: 40px 20px;
+            border-top: 1px solid #e2e8f0;
+            text-align: center;
+            color: var(--gray);
+        }
+        
+        /* Mobile Sticky CTA Bar */
+        .mobile-cta-bar {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--white);
+            padding: 12px 20px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+            z-index: 999;
+        }
+        
+        .mobile-cta-bar .cta-button {
+            width: 100%;
+            padding: 16px;
+            font-size: 18px;
+            border-radius: 12px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            /* Show mobile sticky CTA */
+            .mobile-cta-bar {
+                display: block;
+            }
+            
+            /* Add padding to body so content doesn't hide behind sticky CTA */
+            body {
+                padding-bottom: 80px;
+            }
+            
+            /* Header optimizations */
+            header {
+                padding: 12px 0;
+            }
+            
+            .header-content > div:nth-child(2) {
+                display: none !important; /* Hide email/call button on mobile */
+            }
+            
+            .header-content > a {
+                padding: 10px 18px !important;
+                font-size: 15px !important;
+            }
+            
+            /* Hero - compact for mobile */
+            .hero {
+                padding: 50px 20px 60px;
+            }
+            
+            .hero h1 {
+                font-size: 40px;
+                line-height: 1.15;
+                margin-bottom: 20px;
+            }
+            
+            .hero .subtitle {
+                font-size: 19px;
+                line-height: 1.4;
+                margin-bottom: 24px;
+            }
+            
+            .hero .handmade-badge {
+                font-size: 13px;
+                padding: 10px 18px;
+                margin-bottom: 24px;
+            }
+            
+            .hero .cta-group {
+                flex-direction: column;
+                gap: 12px;
+            }
+            
+            .hero .cta-button {
+                width: 100%;
+                padding: 18px;
+                font-size: 18px;
+                border-radius: 12px;
+            }
+            
+            /* Section headings more compact */
+            .problem-section h2,
+            .solution-section h2,
+            .how-it-works h2,
+            .portfolio-preview h2 {
+                font-size: 32px;
+                line-height: 1.2;
+            }
+            
+            /* Trust badges */
+            .badges-grid {
+                grid-template-columns: 1fr !important;
+                gap: 12px !important;
+            }
+            
+            .badge-item {
+                padding: 14px !important;
+            }
+            
+            /* Container padding */
+            .container {
+                padding: 0 16px;
+            }
+            
+            /* All section padding */
+            section {
+                padding: 50px 0 !important;
+            }
+            
+            .trust-badges {
+                padding: 30px 0 !important;
+            }
+        }
+        
+        /* Small phones (<400px) */
+        @media (max-width: 400px) {
+            .hero h1 {
+                font-size: 34px;
+            }
+            
+            .hero .subtitle {
+                font-size: 17px;
+            }
+            
+            .logo {
+                font-size: 20px;
+            }
+        }
+    </style>
+    <!-- Tawk.to Live Chat -->
+    <script type="text/javascript">
+    var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+    (function(){
+    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+    s1.async=true;
+    s1.src='https://embed.tawk.to/placeholder/placeholder';
+    s1.charset='UTF-8';
+    s1.setAttribute('crossorigin','*');
+    s0.parentNode.insertBefore(s1,s0);
+    })();
+    </script>
+    <!-- Facebook Pixel - REPLACE WITH YOUR PIXEL ID -->
+    <script>
+    !function(f,b,e,v,n,t,s)
+    {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+    if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+    n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];
+    s.parentNode.insertBefore(t,s)}(window, document,'script',
+    'https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init', 'YOUR_PIXEL_ID_HERE');
+    fbq('track', 'PageView');
+    </script>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=YOUR_PIXEL_ID_HERE&ev=PageView&noscript=1" /></noscript>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">ReviewPilot</div>
+                <div style="display:flex;align-items:center;gap:20px;font-size:14px;color:var(--gray);">
+                    <a href="mailto:support@reviewpilot.business" style="text-decoration:none;color:inherit;">📧 support@reviewpilot.business</a>
+                    <a href="#pricing" class="cta-button" style="padding:8px 16px;font-size:14px;">Book Free Call</a>
+                </div>
+                <a href="#pricing" class="cta-button">Get Your Website</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="handmade-badge">
+                ✋ HANDMADE • NOT AI
+            </div>
+            <h1>Your Website.<br>Built in 24 Hours.</h1>
+            <p class="subtitle">Custom-designed websites from $297. No templates, no AI, no hassle.<br>Real designers. Real websites. Really fast.</p>
+            
+            <!-- Social Proof Stats -->
+            <div style="display:flex;gap:32px;justify-content:center;margin:32px 0;font-size:14px;opacity:0.9;">
+                <div><strong style="font-size:24px;display:block;">500+</strong>Sites Launched</div>
+                <div><strong style="font-size:24px;display:block;">4.9★</strong>Average Rating</div>
+                <div><strong style="font-size:24px;display:block;">24-72hr</strong>Fast Delivery</div>
+            </div>
+            
+            <div class="cta-group">
+                <a href="/signup.html" class="cta-button" style="font-size:20px;padding:18px 40px;">Get Started Now →</a>
+                <a href="#pricing" class="cta-button cta-secondary">View Pricing</a>
+            </div>
+            
+            <p style="margin-top:20px;font-size:14px;opacity:0.8;">✓ Domain included &nbsp;•&nbsp; ✓ Hosting included &nbsp;•&nbsp; ✓ Cancel anytime</p>
+        </div>
+    </section>
+
+    <!-- Trust Badges -->
+    <section class="trust-badges">
+        <div class="container">
+            <div class="badges-grid">
+                <div class="badge-item">
+                    <span class="badge-icon">⚡</span>
+                    <span>24-Hour Delivery</span>
+                </div>
+                <div class="badge-item">
+                    <span class="badge-icon">✋</span>
+                    <span>100% Handmade</span>
+                </div>
+                <div class="badge-item">
+                    <span class="badge-icon">🌐</span>
+                    <span>Domain Included</span>
+                </div>
+                <div class="badge-item">
+                    <span class="badge-icon">🎨</span>
+                    <span>Custom Design</span>
+                </div>
+                <div class="badge-item">
+                    <span class="badge-icon">💰</span>
+                    <span>Affordable Pricing</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Proof -->
+    <section class="social-proof">
+        <div class="container">
+            <h3>Trusted by businesses in</h3>
+            <div class="industries-grid">
+                <div class="industry-item">🍕 Restaurants</div>
+                <div class="industry-item">💪 Fitness & Gyms</div>
+                <div class="industry-item">✂️ Salons & Spas</div>
+                <div class="industry-item">🏗️ Contractors</div>
+                <div class="industry-item">🛒 E-commerce</div>
+                <div class="industry-item">⚖️ Professional Services</div>
+                <div class="industry-item">📸 Creative Studios</div>
+                <div class="industry-item">🏥 Healthcare</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Problem Section -->
+    <section class="problem-section">
+        <div class="container">
+            <h2>Tired of...</h2>
+            <div class="problem-grid">
+                <div class="problem-card">
+                    <div class="icon">🤖</div>
+                    <h3>Generic AI Templates</h3>
+                    <p>Everyone's site looks the same. AI-generated designs lack personality and fail to represent your unique brand.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="icon">😰</div>
+                    <h3>DIY Website Builders</h3>
+                    <p>Wix, Squarespace, WordPress... endless hours of frustration trying to make it look professional.</p>
+                </div>
+                <div class="problem-card">
+                    <div class="icon">💸</div>
+                    <h3>Expensive Agencies</h3>
+                    <p>$5,000-$15,000 budgets and 6-week timelines. Who has that kind of time or money?</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Solution Section -->
+    <section class="solution-section">
+        <div class="container">
+            <h2>We Build It For You</h2>
+            <p class="subtitle">Every website is hand-crafted from scratch by real designers. No templates. No AI. No cookie-cutter solutions. Just a beautiful site that represents YOUR business.</p>
+            
+            <div class="solution-grid">
+                <div class="solution-card">
+                    <div class="icon">✋</div>
+                    <h3>100% Handmade</h3>
+                    <p>Real designers create every element specifically for your business. No templates, no shortcuts.</p>
+                </div>
+                <div class="solution-card">
+                    <div class="icon">⚡</div>
+                    <h3>24-Hour Turnaround</h3>
+                    <p>Submit your info today, get your website tomorrow. No waiting weeks or months.</p>
+                </div>
+                <div class="solution-card">
+                    <div class="icon">🎯</div>
+                    <h3>Custom Everything</h3>
+                    <p>Your colors, your style, your content. Built from the ground up to match your vision.</p>
+                </div>
+                <div class="solution-card">
+                    <div class="icon">💬</div>
+                    <h3>Direct Communication</h3>
+                    <p>Work directly with us. No middlemen, no confusing dashboards, just real human support.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="container">
+            <h2>How It Works</h2>
+            <div class="steps-grid">
+                <div class="step-card">
+                    <div class="step-number">1</div>
+                    <h3>Fill Out the Form</h3>
+                    <p>Tell us about your business, upload your logo and photos, and share your vision.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">2</div>
+                    <h3>We Build Your Site</h3>
+                    <p>Our designers hand-craft your website from scratch. No templates, all custom.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">3</div>
+                    <h3>Review & Launch</h3>
+                    <p>We email you a preview within 24 hours. Request changes, then we launch it live.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-number">4</div>
+                    <h3>We Handle Everything</h3>
+                    <p>Hosting, updates, maintenance included. Just pay your monthly fee and focus on your business.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Portfolio Preview -->
+    <section class="portfolio-preview">
+        <div class="container">
+            <h2>Recent Work</h2>
+            <div class="portfolio-grid">
+                <div class="portfolio-item" onclick="window.open('https://paintingalaska.com', '_blank')" style="cursor: pointer;">
+                    <div class="portfolio-image">🎨</div>
+                    <div class="portfolio-info">
+                        <h3>Painting Alaska</h3>
+                        <p>Professional painting contractor with service pages, portfolio gallery, and contact forms</p>
+                        <a href="https://paintingalaska.com" target="_blank" style="color: #2563eb; font-size: 14px; font-weight: 700; margin-top: 8px; display: inline-block;">View Site →</a>
+                    </div>
+                </div>
+                <div class="portfolio-item" onclick="window.open('https://gblpeptides.com', '_blank')" style="cursor: pointer;">
+                    <div class="portfolio-image">🧪</div>
+                    <div class="portfolio-info">
+                        <h3>GBL Peptides</h3>
+                        <p>E-commerce site for research peptides with full product catalog, cart system, and secure checkout</p>
+                        <a href="https://gblpeptides.com" target="_blank" style="color: #2563eb; font-size: 14px; font-weight: 700; margin-top: 8px; display: inline-block;">View Site →</a>
+                    </div>
+                </div>
+                <div class="portfolio-item" onclick="window.open('https://www.adrianandsonsmobileautodetail.com', '_blank')" style="cursor: pointer;">
+                    <div class="portfolio-image">🚗</div>
+                    <div class="portfolio-info">
+                        <h3>Adrian & Sons Auto Detail</h3>
+                        <p>Mobile auto detailing service with booking system, service packages, and pricing calculator</p>
+                        <a href="https://www.adrianandsonsmobileautodetail.com" target="_blank" style="color: #2563eb; font-size: 14px; font-weight: 700; margin-top: 8px; display: inline-block;">View Site →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Pricing Section -->
+<section class="pricing-section" id="pricing">
+    <div class="container">
+        <h2>Simple, Transparent Pricing</h2>
+        <p class="pricing-subtitle">One-time setup fee + affordable monthly subscription. No hidden costs, no surprises.</p>
+        
+        <div class="pricing-grid">
+            <!-- Starter -->
+            <div class="pricing-card">
+                <div class="plan-name">Starter</div>
+                <div class="plan-price">
+                    <span class="setup-price">$297</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$39</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">Perfect for simple business sites</div>
+                
+                <ul class="features-list">
+                    <li>✓ Up to 5 pages</li>
+                    <li>✓ Mobile responsive design</li>
+                    <li>✓ Contact form</li>
+                    <li>✓ Basic SEO setup</li>
+                    <li>✓ 5 stock photos included</li>
+                    <li>✓ 2 email accounts</li>
+                    <li>✓ Hosting & SSL included</li>
+                    <li>✓ We register your domain (free)</li>
+                    <li><strong>✓ 1 update per month</strong></li>
+                    <li>✓ 48-hour email support</li>
+                </ul>
+                
+                <div style="background:#fef2f2;border:1px solid #fca5a5;padding:8px;border-radius:8px;margin-bottom:16px;text-align:center;"><span style="color:#991b1b;font-size:13px;font-weight:700;">🔥 Only 8 spots left this week</span></div>
+                <a href="/signup.html?plan=starter" class="plan-button">Get Started</a>
+                
+                <div class="plan-note">Great for landing pages, portfolios, simple business sites</div>
+            </div>
+            
+            <!-- Pro (Most Popular) -->
+            <div class="pricing-card featured">
+                <div class="popular-badge">MOST POPULAR</div>
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">
+                    <span class="setup-price">$497</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$49</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">For growing businesses that need flexibility</div>
+                
+                <ul class="features-list">
+                    <li>✓ Up to 10 pages</li>
+                    <li>✓ Everything in Starter, PLUS:</li>
+                    <li><strong>✓ 4 updates per month</strong></li>
+                    <li>✓ E-commerce (up to 50 products)</li>
+                    <li>✓ Booking/scheduling system</li>
+                    <li>✓ Blog setup & management</li>
+                    <li>✓ Google Analytics integration</li>
+                    <li>✓ Social media integration</li>
+                    <li>✓ 20 stock photos included</li>
+                    <li>✓ 5 email accounts</li>
+                    <li>✓ Onboarding training call</li>
+                    <li>✓ 24-hour email support</li>
+                    <li>✓ Priority handling</li>
+                </ul>
+                
+                <div style="background:#fef2f2;border:1px solid #fca5a5;padding:8px;border-radius:8px;margin-bottom:16px;text-align:center;"><span style="color:#991b1b;font-size:13px;font-weight:700;">🔥 Only 5 spots left this week</span></div>
+                <a href="/signup.html?plan=pro" class="plan-button primary">Get Started</a>
+                
+                <div class="plan-note">Perfect for restaurants, gyms, coaches, consultants, online stores</div>
+            </div>
+            
+            <!-- Enterprise -->
+            <div class="pricing-card premium">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-price">
+                    <span class="setup-price">$997</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$99</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">Unlimited everything. White-glove service.</div>
+                
+                <ul class="features-list">
+                    <li>✓ UNLIMITED pages</li>
+                    <li>✓ Everything in Pro, PLUS:</li>
+                    <li><strong>✓ UNLIMITED updates</strong></li>
+                    <li class="highlight">Email us anytime with ANY request</li>
+                    <li>✓ Advanced e-commerce (unlimited products)</li>
+                    <li>✓ Custom features & integrations</li>
+                    <li>✓ Coupon/discount code systems</li>
+                    <li>✓ Member/login areas</li>
+                    <li>✓ Complete site redesigns included</li>
+                    <li>✓ UNLIMITED stock photos</li>
+                    <li>✓ UNLIMITED email accounts</li>
+                    <li>✓ Dedicated account manager</li>
+                    <li>✓ 12-hour support response</li>
+                    <li>✓ Priority everything</li>
+                </ul>
+                
+                <div style="background:#fef2f2;border:1px solid #fca5a5;padding:8px;border-radius:8px;margin-bottom:16px;text-align:center;"><span style="color:#991b1b;font-size:13px;font-weight:700;">🔥 Only 3 spots left this week</span></div>
+                <a href="/signup.html?plan=enterprise" class="plan-button premium">Get Started</a>
+                
+                <div class="plan-note">For serious businesses that demand the best. No limits, no restrictions.</div>
+            </div>
+        </div>
+        
+        <div class="pricing-faq">
+            <h3>What counts as an "update"?</h3>
+            <p><strong>Anything you need changed on your site:</strong> Text edits, image swaps, new pages, removing/adding sections, changing colors, updating products, creating discount codes, site layout changes, adding features — literally any change you can think of.</p>
+            <p><strong>Why unlimited updates matter:</strong> Your business evolves. You'll want to add new products, update prices, announce promotions, refresh photos, add testimonials. With Pro (4/month) you can make changes weekly. With Enterprise (unlimited) you can make changes daily.</p>
+        </div>
+        
+        <div style="text-align:center;margin:40px 0 20px;">
+            <p style="color:var(--gray);font-size:14px;margin-bottom:16px;font-weight:600;">SECURE PAYMENT POWERED BY STRIPE</p>
+            <div style="display:flex;justify-content:center;gap:20px;flex-wrap:wrap;align-items:center;opacity:0.7;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Crect fill='%231434CB' width='48' height='32' rx='4'/%3E%3Ctext x='24' y='20' font-family='Arial' font-size='12' fill='white' text-anchor='middle' font-weight='bold'%3EVISA%3C/text%3E%3C/svg%3E" alt="Visa" style="height:32px;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Crect fill='%23EB001B' width='20' height='32' rx='4'/%3E%3Crect fill='%23F79E1B' x='28' width='20' height='32' rx='4'/%3E%3C/svg%3E" alt="Mastercard" style="height:32px;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Crect fill='%23006FCF' width='48' height='32' rx='4'/%3E%3Ctext x='24' y='20' font-family='Arial' font-size='10' fill='white' text-anchor='middle' font-weight='bold'%3EAMEX%3C/text%3E%3C/svg%3E" alt="American Express" style="height:32px;">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 32'%3E%3Crect fill='%23003087' width='48' height='32' rx='4'/%3E%3Ctext x='24' y='20' font-family='Arial' font-size='9' fill='white' text-anchor='middle' font-weight='bold'%3EPayPal%3C/text%3E%3C/svg%3E" alt="PayPal" style="height:32px;">
+            </div>
+        </div>
+        <div class="pricing-guarantee">
+            <div class="guarantee-icon">✅</div>
+            <div>
+                <h3>100% Money-Back Guarantee</h3>
+                <p>Not happy with your website? Full refund within 7 days. No questions asked.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.pricing-section {
+    padding: 80px 20px;
+    background: var(--white);
+}
+
+.pricing-section h2 {
+    font-size: 42px;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.pricing-subtitle {
+    text-align: center;
+    font-size: 18px;
+    color: var(--gray);
+    margin-bottom: 60px;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+}
+
+.pricing-card {
+    background: var(--white);
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 40px 32px;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-card.featured {
+    border-color: var(--primary);
+    border-width: 3px;
+    transform: scale(1.05);
+}
+
+.pricing-card.featured:hover {
+    transform: scale(1.05) translateY(-8px);
+}
+
+.pricing-card.premium {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: var(--white);
+    border: none;
+}
+
+.pricing-card.premium .plan-name,
+.pricing-card.premium .plan-description,
+.pricing-card.premium .features-list,
+.pricing-card.premium .plan-note {
+    color: var(--white);
+}
+
+.pricing-card.premium .setup-label,
+.pricing-card.premium .price-period {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.popular-badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: var(--white);
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+.plan-name {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.plan-price {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.setup-price {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--primary);
+}
+
+.pricing-card.premium .setup-price {
+    color: var(--white);
+}
+
+.setup-label {
+    display: block;
+    font-size: 14px;
+    color: var(--gray);
+    margin-top: 4px;
+}
+
+.monthly-price {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.price-amount {
+    font-size: 48px;
+    font-weight: 900;
+}
+
+.price-period {
+    font-size: 18px;
+    color: var(--gray);
+}
+
+.plan-description {
+    text-align: center;
+    color: var(--gray);
+    margin-bottom: 24px;
+    font-size: 15px;
+}
+
+.features-list {
+    list-style: none;
+    margin: 0 0 32px 0;
+    padding: 0;
+}
+
+.features-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.pricing-card.premium .features-list li {
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.features-list li strong {
+    color: var(--accent);
+    font-size: 16px;
+}
+
+.pricing-card.premium .features-list li strong {
+    color: #fbbf24;
+}
+
+.features-list li.highlight {
+    font-style: italic;
+    font-size: 14px;
+    padding-left: 16px;
+    color: var(--gray);
+}
+
+.pricing-card.premium .features-list li.highlight {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.plan-button {
+    display: block;
+    width: 100%;
+    background: var(--dark);
+    color: var(--white);
+    padding: 16px;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.3s;
+    border: none;
+}
+
+.plan-button:hover {
+    background: var(--primary);
+    transform: translateY(-2px);
+}
+
+.plan-button.primary {
+    background: var(--primary);
+}
+
+.plan-button.primary:hover {
+    background: var(--primary-dark);
+}
+
+.plan-button.premium {
+    background: var(--white);
+    color: var(--primary);
+}
+
+.plan-button.premium:hover {
+    background: #f8fafc;
+}
+
+.plan-note {
+    text-align: center;
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 16px;
+    font-style: italic;
+}
+
+.pricing-faq {
+    max-width: 800px;
+    margin: 60px auto 40px;
+    padding: 32px;
+    background: var(--light-gray);
+    border-radius: 16px;
+}
+
+.pricing-faq h3 {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    color: var(--dark);
+}
+
+.pricing-faq p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--dark);
+    margin-bottom: 16px;
+}
+
+.pricing-faq p:last-child {
+    margin-bottom: 0;
+}
+
+.pricing-guarantee {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 32px;
+    background: #f0fdf4;
+    border: 2px solid var(--accent);
+    border-radius: 16px;
+    text-align: left;
+}
+
+.guarantee-icon {
+    font-size: 48px;
+    flex-shrink: 0;
+}
+
+.pricing-guarantee h3 {
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    color: #065f46;
+}
+
+.pricing-guarantee p {
+    font-size: 16px;
+    color: #065f46;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-card.featured {
+        transform: scale(1);
+    }
+    
+    .pricing-card.featured:hover {
+        transform: translateY(-8px);
+    }
+    
+    .pricing-section h2 {
+        font-size: 32px;
+    }
+    
+    .pricing-guarantee {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>
+</style>
+<!-- Pricing Section -->
+<section class="pricing-section" id="pricing">
+    <div class="container">
+        <h2>Simple, Transparent Pricing</h2>
+        <p class="pricing-subtitle">One-time setup fee + affordable monthly subscription. No hidden costs, no surprises.</p>
+        
+        <div class="pricing-grid">
+            <!-- Starter -->
+            <div class="pricing-card">
+                <div class="plan-name">Starter</div>
+                <div class="plan-price">
+                    <span class="setup-price">$297</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$39</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">Perfect for simple business sites</div>
+                
+                <ul class="features-list">
+                    <li>✓ Up to 5 pages</li>
+                    <li>✓ Mobile responsive design</li>
+                    <li>✓ Contact form</li>
+                    <li>✓ Basic SEO setup</li>
+                    <li>✓ 5 stock photos included</li>
+                    <li>✓ 2 email accounts</li>
+                    <li>✓ Hosting & SSL included</li>
+                    <li>✓ We register your domain (free)</li>
+                    <li><strong>✓ 1 update per month</strong></li>
+                    <li>✓ 48-hour email support</li>
+                </ul>
+                
+                <div style="background:#fef2f2;border:1px solid #fca5a5;padding:8px;border-radius:8px;margin-bottom:16px;text-align:center;"><span style="color:#991b1b;font-size:13px;font-weight:700;">🔥 Only 8 spots left this week</span></div>
+                <a href="/signup.html?plan=starter" class="plan-button">Get Started</a>
+                
+                <div class="plan-note">Great for landing pages, portfolios, simple business sites</div>
+            </div>
+            
+            <!-- Pro (Most Popular) -->
+            <div class="pricing-card featured">
+                <div class="popular-badge">MOST POPULAR</div>
+                <div class="plan-name">Pro</div>
+                <div class="plan-price">
+                    <span class="setup-price">$497</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$49</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">For growing businesses that need flexibility</div>
+                
+                <ul class="features-list">
+                    <li>✓ Up to 10 pages</li>
+                    <li>✓ Everything in Starter, PLUS:</li>
+                    <li><strong>✓ 4 updates per month</strong></li>
+                    <li>✓ E-commerce (up to 50 products)</li>
+                    <li>✓ Booking/scheduling system</li>
+                    <li>✓ Blog setup & management</li>
+                    <li>✓ Google Analytics integration</li>
+                    <li>✓ Social media integration</li>
+                    <li>✓ 20 stock photos included</li>
+                    <li>✓ 5 email accounts</li>
+                    <li>✓ Onboarding training call</li>
+                    <li>✓ 24-hour email support</li>
+                    <li>✓ Priority handling</li>
+                </ul>
+                
+                <div style="background:#fef2f2;border:1px solid #fca5a5;padding:8px;border-radius:8px;margin-bottom:16px;text-align:center;"><span style="color:#991b1b;font-size:13px;font-weight:700;">🔥 Only 5 spots left this week</span></div>
+                <a href="/signup.html?plan=pro" class="plan-button primary">Get Started</a>
+                
+                <div class="plan-note">Perfect for restaurants, gyms, coaches, consultants, online stores</div>
+            </div>
+            
+            <!-- Enterprise -->
+            <div class="pricing-card premium">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-price">
+                    <span class="setup-price">$997</span>
+                    <span class="setup-label">one-time setup</span>
+                </div>
+                <div class="monthly-price">
+                    <span class="price-amount">$99</span><span class="price-period">/month</span>
+                </div>
+                <div class="plan-description">Unlimited everything. White-glove service.</div>
+                
+                <ul class="features-list">
+                    <li>✓ UNLIMITED pages</li>
+                    <li>✓ Everything in Pro, PLUS:</li>
+                    <li><strong>✓ UNLIMITED updates</strong></li>
+                    <li class="highlight">Email us anytime with ANY request</li>
+                    <li>✓ Advanced e-commerce (unlimited products)</li>
+                    <li>✓ Custom features & integrations</li>
+                    <li>✓ Coupon/discount code systems</li>
+                    <li>✓ Member/login areas</li>
+                    <li>✓ Complete site redesigns included</li>
+                    <li>✓ UNLIMITED stock photos</li>
+                    <li>✓ UNLIMITED email accounts</li>
+                    <li>✓ Dedicated account manager</li>
+                    <li>✓ 12-hour support response</li>
+                    <li>✓ Priority everything</li>
+                </ul>
+                
+                <div style="background:#fef2f2;border:1px solid #fca5a5;padding:8px;border-radius:8px;margin-bottom:16px;text-align:center;"><span style="color:#991b1b;font-size:13px;font-weight:700;">🔥 Only 3 spots left this week</span></div>
+                <a href="/signup.html?plan=enterprise" class="plan-button premium">Get Started</a>
+                
+                <div class="plan-note">For serious businesses that demand the best. No limits, no restrictions.</div>
+            </div>
+        </div>
+        
+        <div class="pricing-faq">
+            <h3>What counts as an "update"?</h3>
+            <p><strong>Anything you need changed on your site:</strong> Text edits, image swaps, new pages, removing/adding sections, changing colors, updating products, creating discount codes, site layout changes, adding features — literally any change you can think of.</p>
+            <p><strong>Why unlimited updates matter:</strong> Your business evolves. You'll want to add new products, update prices, announce promotions, refresh photos, add testimonials. With Pro (4/month) you can make changes weekly. With Enterprise (unlimited) you can make changes daily.</p>
+        </div>
+        
+        <div class="pricing-guarantee">
+            <div class="guarantee-icon">✅</div>
+            <div>
+                <h3>100% Money-Back Guarantee</h3>
+                <p>Not happy with your website? Full refund within 7 days. No questions asked.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.pricing-section {
+    padding: 80px 20px;
+    background: var(--white);
+}
+
+.pricing-section h2 {
+    font-size: 42px;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.pricing-subtitle {
+    text-align: center;
+    font-size: 18px;
+    color: var(--gray);
+    margin-bottom: 60px;
+}
+
+.pricing-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 30px;
+    max-width: 1200px;
+    margin: 0 auto 60px;
+}
+
+.pricing-card {
+    background: var(--white);
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 40px 32px;
+    position: relative;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.pricing-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-card.featured {
+    border-color: var(--primary);
+    border-width: 3px;
+    transform: scale(1.05);
+}
+
+.pricing-card.featured:hover {
+    transform: scale(1.05) translateY(-8px);
+}
+
+.pricing-card.premium {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: var(--white);
+    border: none;
+}
+
+.pricing-card.premium .plan-name,
+.pricing-card.premium .plan-description,
+.pricing-card.premium .features-list,
+.pricing-card.premium .plan-note {
+    color: var(--white);
+}
+
+.pricing-card.premium .setup-label,
+.pricing-card.premium .price-period {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.popular-badge {
+    position: absolute;
+    top: -15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--primary);
+    color: var(--white);
+    padding: 6px 20px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+}
+
+.plan-name {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    text-align: center;
+}
+
+.plan-price {
+    text-align: center;
+    margin-bottom: 8px;
+}
+
+.setup-price {
+    font-size: 36px;
+    font-weight: 900;
+    color: var(--primary);
+}
+
+.pricing-card.premium .setup-price {
+    color: var(--white);
+}
+
+.setup-label {
+    display: block;
+    font-size: 14px;
+    color: var(--gray);
+    margin-top: 4px;
+}
+
+.monthly-price {
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+.price-amount {
+    font-size: 48px;
+    font-weight: 900;
+}
+
+.price-period {
+    font-size: 18px;
+    color: var(--gray);
+}
+
+.plan-description {
+    text-align: center;
+    color: var(--gray);
+    margin-bottom: 24px;
+    font-size: 15px;
+}
+
+.features-list {
+    list-style: none;
+    margin: 0 0 32px 0;
+    padding: 0;
+}
+
+.features-list li {
+    padding: 10px 0;
+    border-bottom: 1px solid #f1f5f9;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+.pricing-card.premium .features-list li {
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+}
+
+.features-list li strong {
+    color: var(--accent);
+    font-size: 16px;
+}
+
+.pricing-card.premium .features-list li strong {
+    color: #fbbf24;
+}
+
+.features-list li.highlight {
+    font-style: italic;
+    font-size: 14px;
+    padding-left: 16px;
+    color: var(--gray);
+}
+
+.pricing-card.premium .features-list li.highlight {
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.plan-button {
+    display: block;
+    width: 100%;
+    background: var(--dark);
+    color: var(--white);
+    padding: 16px;
+    border-radius: 10px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all 0.3s;
+    border: none;
+}
+
+.plan-button:hover {
+    background: var(--primary);
+    transform: translateY(-2px);
+}
+
+.plan-button.primary {
+    background: var(--primary);
+}
+
+.plan-button.primary:hover {
+    background: var(--primary-dark);
+}
+
+.plan-button.premium {
+    background: var(--white);
+    color: var(--primary);
+}
+
+.plan-button.premium:hover {
+    background: #f8fafc;
+}
+
+.plan-note {
+    text-align: center;
+    font-size: 13px;
+    color: var(--gray);
+    margin-top: 16px;
+    font-style: italic;
+}
+
+.pricing-faq {
+    max-width: 800px;
+    margin: 60px auto 40px;
+    padding: 32px;
+    background: var(--light-gray);
+    border-radius: 16px;
+}
+
+.pricing-faq h3 {
+    font-size: 24px;
+    font-weight: 900;
+    margin-bottom: 16px;
+    color: var(--dark);
+}
+
+.pricing-faq p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: var(--dark);
+    margin-bottom: 16px;
+}
+
+.pricing-faq p:last-child {
+    margin-bottom: 0;
+}
+
+.pricing-guarantee {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 32px;
+    background: #f0fdf4;
+    border: 2px solid var(--accent);
+    border-radius: 16px;
+    text-align: left;
+}
+
+.guarantee-icon {
+    font-size: 48px;
+    flex-shrink: 0;
+}
+
+.pricing-guarantee h3 {
+    font-size: 22px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    color: #065f46;
+}
+
+.pricing-guarantee p {
+    font-size: 16px;
+    color: #065f46;
+    margin: 0;
+}
+
+@media (max-width: 768px) {
+    .pricing-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .pricing-card.featured {
+        transform: scale(1);
+    }
+    
+    .pricing-card.featured:hover {
+        transform: translateY(-8px);
+    }
+    
+    .pricing-section h2 {
+        font-size: 32px;
+    }
+    
+    .pricing-guarantee {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+</style>
+        <div class="container" style="max-width:700px;">
+            <h2 style="font-size:48px;line-height:1.2;">Launch Your Website<br>Tomorrow</h2>
+            <p style="font-size:20px;margin:24px 0 40px;">From $297. Handmade. Custom-designed. Zero hassle.</p>
+            <a href="/signup.html" class="cta-button" style="font-size:20px;padding:20px 48px;box-shadow:0 8px 24px rgba(37,99,235,0.3);">Get Started Now →</a>
+            <p style="margin-top: 32px; font-size: 14px; opacity: 0.7;">✓ Domain included &nbsp;•&nbsp; ✓ Hosting included &nbsp;•&nbsp; ✓ Cancel anytime &nbsp;•&nbsp; ✓ No contracts</p>
+            <p style="margin-top: 16px; font-size: 16px; opacity: 0.8;"><strong>500+ websites launched.</strong> Join them.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2026 ReviewPilot. All rights reserved.</p>
+            <p style="margin-top: 12px;">
+                <a href="/terms.html" style="color: var(--gray); text-decoration: none; margin: 0 12px;">Terms</a>
+                <a href="/privacy.html" style="color: var(--gray); text-decoration: none; margin: 0 12px;">Privacy</a>
+                <a href="/contact.html" style="color: var(--gray); text-decoration: none; margin: 0 12px;">Contact</a>
+                <a href="/billing.html" style="color: var(--gray); text-decoration: none; margin: 0 12px;">Billing</a>
+            </p>
+        </div>
+    </footer>
+
+    <!-- Mobile Sticky CTA Bar (mobile only) -->
+    <div class="mobile-cta-bar">
+        <a href="/signup.html" class="cta-button">Get Your Website Now →</a>
+    </div>
+</body>
+</html>

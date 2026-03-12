@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ReviewPilot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: var(--light-gray);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+        
+        .header {
+            background: var(--white);
+            border-bottom: 1px solid #e2e8f0;
+            padding: 20px;
+        }
+        
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            color: var(--primary);
+        }
+        
+        .logout-btn {
+            background: transparent;
+            border: 2px solid var(--gray);
+            color: var(--gray);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+        
+        .logout-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        .welcome {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .welcome h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+        
+        .welcome p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+        
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+        }
+        
+        .card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .card h2 {
+            font-size: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-in-progress {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        .status-preview {
+            background: #e0e7ff;
+            color: #4338ca;
+        }
+        
+        .status-live {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .info-grid {
+            display: grid;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        
+        .info-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--light-gray);
+            border-radius: 8px;
+        }
+        
+        .info-label {
+            color: var(--gray);
+            font-weight: 600;
+        }
+        
+        .info-value {
+            font-weight: 700;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 700;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            font-size: 16px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: var(--white);
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+        
+        .btn-full {
+            width: 100%;
+            margin-bottom: 12px;
+        }
+        
+        .timeline {
+            position: relative;
+            padding-left: 32px;
+        }
+        
+        .timeline-item {
+            position: relative;
+            padding-bottom: 24px;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 6px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gray);
+        }
+        
+        .timeline-item.active::before {
+            background: var(--primary);
+        }
+        
+        .timeline-item.completed::before {
+            background: var(--accent);
+        }
+        
+        .timeline-label {
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        
+        .timeline-date {
+            color: var(--gray);
+            font-size: 14px;
+        }
+        
+        .website-preview {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            margin-top: 16px;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--gray);
+        }
+        
+        .empty-state-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+        
+        @media (max-width: 768px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 16px;
+                text-align: center;
+            }
+            
+            .welcome h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-content">
+            <div class="logo">ReviewPilot</div>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- Container -->
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome">
+            <h1>Welcome back, <span id="customer-name">Customer</span>!</h1>
+            <p>Track your website build progress and manage your account.</p>
+        </div>
+
+        <!-- Dashboard Grid -->
+        <div class="dashboard-grid">
+            <!-- Main Card: Order Status -->
+            <div class="card">
+                <h2>Your Website Order</h2>
+                
+                <div id="order-content">
+                    <!-- Will be populated by JavaScript -->
+                    <div class="empty-state">
+                        <div class="empty-state-icon">⏳</div>
+                        <p>Loading your order...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar: Quick Actions -->
+            <div class="card">
+                <h2>Quick Actions</h2>
+                
+                <a href="/billing.html" class="btn btn-primary btn-full">💳 Manage Billing</a>
+                <a href="mailto:support@reviewpilot.business" class="btn btn-secondary btn-full">📧 Contact Support</a>
+                <button class="btn btn-secondary btn-full" onclick="requestChanges()">✏️ Request Changes</button>
+                
+                <div style="margin-top: 32px; padding-top: 32px; border-top: 1px solid #e2e8f0;">
+                    <h3 style="font-size: 18px; margin-bottom: 16px;">Need Help?</h3>
+                    <p style="color: var(--gray); font-size: 14px; line-height: 1.6;">
+                        Email us at <strong>support@reviewpilot.business</strong><br>
+                        We typically respond within 2-4 hours.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentOrder = null;
+        let sessionToken = null;
+
+        // Check authentication on load
+        window.addEventListener('DOMContentLoaded', async () => {
+            await checkAuth();
+        });
+
+        async function checkAuth() {
+            // Check for magic link token
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+
+            if (token) {
+                // Verify magic link token
+                try {
+                    const response = await fetch('/.netlify/functions/verify-token', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ token })
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        // Save session
+                        sessionToken = data.sessionToken;
+                        localStorage.setItem('reviewpilot_session', sessionToken);
+                        localStorage.setItem('reviewpilot_email', data.email);
+                        
+                        // Remove token from URL
+                        window.history.replaceState({}, document.title, '/dashboard.html');
+                        
+                        // Load order
+                        await loadOrder(data.email);
+                    } else {
+                        showError('Invalid or expired login link. Please request a new one.');
+                        setTimeout(() => window.location.href = '/login.html', 3000);
+                    }
+                } catch (error) {
+                    console.error('Auth error:', error);
+                    showError('Authentication failed. Please try again.');
+                }
+            } else {
+                // Check for existing session
+                sessionToken = localStorage.getItem('reviewpilot_session');
+                const email = localStorage.getItem('reviewpilot_email');
+
+                if (!sessionToken || !email) {
+                    // No session - redirect to login
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                // Load order
+                await loadOrder(email);
+            }
+        }
+
+        async function loadOrder(email) {
+            try {
+                const response = await fetch(`/.netlify/functions/get-order?email=${encodeURIComponent(email)}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    currentOrder = data.order;
+                    renderOrder();
+                } else {
+                    showError(data.error || 'Order not found');
+                }
+            } catch (error) {
+                console.error('Load order error:', error);
+                showError('Failed to load order. Please refresh the page.');
+            }
+        }
+
+        function renderOrder() {
+            if (!currentOrder) return;
+
+            // Update customer name
+            document.getElementById('customer-name').textContent = currentOrder.customerName;
+
+            // Render order content
+            const statusText = getStatusText(currentOrder.status);
+            const statusClass = `status-${currentOrder.status.replace('_', '-')}`;
+
+            let websiteSection = '';
+            if (currentOrder.status === 'preview_ready' && currentOrder.previewUrl) {
+                websiteSection = `
+                    <div style="margin-top: 24px;">
+                        <h3 style="font-size: 18px; margin-bottom: 12px;">Preview Your Website</h3>
+                        <p style="color: var(--gray); margin-bottom: 16px;">
+                            Your website preview is ready! Take a look and let us know if you'd like any changes.
+                        </p>
+                        <a href="${currentOrder.previewUrl}" target="_blank" class="btn btn-primary" style="display: inline-block;">
+                            View Preview →
+                        </a>
+                    </div>
+                `;
+            } else if (currentOrder.status === 'live' && currentOrder.websiteUrl) {
+                websiteSection = `
+                    <div style="margin-top: 24px; padding: 24px; background: #d1fae5; border-radius: 12px;">
+                        <h3 style="font-size: 18px; margin-bottom: 12px; color: #065f46;">🎉 Your Website is Live!</h3>
+                        <p style="color: #065f46; margin-bottom: 16px;">
+                            Your website is now live and accessible to the world.
+                        </p>
+                        <a href="${currentOrder.websiteUrl}" target="_blank" class="btn btn-primary" style="display: inline-block;">
+                            Visit Your Website →
+                        </a>
+                    </div>
+                `;
+            }
+
+            const content = `
+                <div class="status-badge ${statusClass}">${statusText}</div>
+                
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">Plan</span>
+                        <span class="info-value">${currentOrder.plan.charAt(0).toUpperCase() + currentOrder.plan.slice(1)}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Delivery Time</span>
+                        <span class="info-value">${currentOrder.deliveryTime}</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Order Date</span>
+                        <span class="info-value">${new Date(currentOrder.createdAt).toLocaleDateString()}</span>
+                    </div>
+                </div>
+
+                <h3 style="font-size: 18px; margin: 32px 0 16px;">Build Progress</h3>
+                <div class="timeline">
+                    <div class="timeline-item ${currentOrder.status === 'pending' ? 'active' : 'completed'}">
+                        <div class="timeline-label">✓ Order Received</div>
+                        <div class="timeline-date">${new Date(currentOrder.createdAt).toLocaleString()}</div>
+                    </div>
+                    <div class="timeline-item ${currentOrder.status === 'in_progress' ? 'active' : currentOrder.status === 'preview_ready' || currentOrder.status === 'live' ? 'completed' : ''}">
+                        <div class="timeline-label">${currentOrder.status === 'in_progress' || currentOrder.status === 'preview_ready' || currentOrder.status === 'live' ? '✓' : '○'} Building Website</div>
+                        <div class="timeline-date">${currentOrder.status === 'in_progress' ? 'In progress...' : ''}</div>
+                    </div>
+                    <div class="timeline-item ${currentOrder.status === 'preview_ready' ? 'active' : currentOrder.status === 'live' ? 'completed' : ''}">
+                        <div class="timeline-label">${currentOrder.status === 'preview_ready' || currentOrder.status === 'live' ? '✓' : '○'} Preview Ready</div>
+                        <div class="timeline-date">${currentOrder.status === 'preview_ready' || currentOrder.status === 'live' ? 'Ready for review' : 'Pending'}</div>
+                    </div>
+                    <div class="timeline-item ${currentOrder.status === 'live' ? 'active' : ''}">
+                        <div class="timeline-label">${currentOrder.status === 'live' ? '✓' : '○'} Website Live</div>
+                        <div class="timeline-date">${currentOrder.status === 'live' ? 'Your site is live!' : 'Pending'}</div>
+                    </div>
+                </div>
+
+                ${websiteSection}
+            `;
+
+            document.getElementById('order-content').innerHTML = content;
+        }
+
+        function getStatusText(status) {
+            const statuses = {
+                'pending': '⏳ Order Received',
+                'in_progress': '🔨 Building Your Website',
+                'preview_ready': '👀 Preview Ready',
+                'live': '🎉 Live'
+            };
+            return statuses[status] || 'Processing';
+        }
+
+        function showError(message) {
+            document.getElementById('order-content').innerHTML = `
+                <div class="empty-state">
+                    <div class="empty-state-icon">⚠️</div>
+                    <p>${message}</p>
+                </div>
+            `;
+        }
+
+        function logout() {
+            localStorage.removeItem('reviewpilot_session');
+            localStorage.removeItem('reviewpilot_email');
+            window.location.href = '/';
+        }
+
+        function requestChanges() {
+            const subject = encodeURIComponent(`Website Changes Request - Order ${currentOrder?.id || ''}`);
+            const body = encodeURIComponent(`Hi,\n\nI'd like to request changes to my website:\n\n[Describe your requested changes here]\n\nOrder ID: ${currentOrder?.id || 'N/A'}\nEmail: ${localStorage.getItem('reviewpilot_email') || 'N/A'}`);
+            window.location.href = `mailto:support@reviewpilot.business?subject=${subject}&body=${body}`;
+        }
+    </script>
+</body>
+</html>
