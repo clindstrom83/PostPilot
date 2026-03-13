@@ -1,13 +1,4 @@
-const { getStore } = require('@netlify/blobs');
-const crypto = require('crypto');
-
-const usersStore = () => getStore('users');
-const SESSION_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 days
-
-// Simple password hashing (production should use bcrypt)
-function hashPassword(password) {
-  return crypto.createHash('sha256').update(password).digest('hex');
-}
+const { createUser } = require('./lib/users');
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -48,58 +39,21 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const emailLower = email.toLowerCase();
-    const store = usersStore();
-
-    // Check if user already exists
-    const existingUsers = await store.get('users', { type: 'json' }) || {};
-    
-    if (existingUsers[emailLower]) {
-      return {
-        statusCode: 400,
-        headers,
-        body: JSON.stringify({ error: 'Account with this email already exists' })
-      };
-    }
-
-    // Create new user
-    const userId = `user_${Date.now()}`;
-    const passwordHash = hashPassword(password);
-    const sessionToken = crypto.randomBytes(32).toString('hex');
-
-    existingUsers[emailLower] = {
-      id: userId,
-      name: name,
-      email: emailLower,
-      passwordHash: passwordHash,
-      createdAt: new Date().toISOString(),
-      sessions: {
-        [sessionToken]: {
-          expires: Date.now() + SESSION_EXPIRY,
-          createdAt: new Date().toISOString()
-        }
-      }
-    };
-
-    await store.setJSON('users', existingUsers);
+    const result = await createUser(name, email, password);
 
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({ 
         success: true,
-        sessionToken: sessionToken,
-        user: {
-          id: userId,
-          name: name,
-          email: emailLower
-        }
+        sessionToken: result.sessionToken,
+        user: result.user
       })
     };
   } catch (error) {
     console.error('Signup error:', error);
     return {
-      statusCode: 500,
+      statusCode: 400,
       headers,
       body: JSON.stringify({ error: error.message })
     };
