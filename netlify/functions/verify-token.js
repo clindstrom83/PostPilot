@@ -1,4 +1,4 @@
-const { verifyToken, deleteToken, createToken } = require('./lib/storage');
+const { verifyToken, deleteToken, createToken } = require('./lib/storage-simple');
 
 const SESSION_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 days
 

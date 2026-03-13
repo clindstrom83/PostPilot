@@ -1,4 +1,4 @@
-const { createUser } = require('./lib/users');
+const { createUser } = require('./lib/users-simple');
 
 exports.handler = async (event, context) => {
   const headers = {

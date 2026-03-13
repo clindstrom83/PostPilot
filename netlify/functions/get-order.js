@@ -1,4 +1,4 @@
-const { getOrdersByEmail } = require('./lib/storage');
+const { getOrdersByEmail } = require('./lib/storage-simple');
 
 exports.handler = async (event, context) => {
   const headers = {

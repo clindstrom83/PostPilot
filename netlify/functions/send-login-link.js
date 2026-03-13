@@ -1,5 +1,5 @@
 const { Resend } = require('resend');
-const { createToken } = require('./lib/storage');
+const { createToken } = require('./lib/storage-simple');
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const TOKEN_EXPIRY = 15 * 60 * 1000; // 15 minutes

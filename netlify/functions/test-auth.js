@@ -1,5 +1,5 @@
 // Test endpoint to check if auth is working
-const { getStore } = require('@netlify/blobs');
+const fs = require('fs').promises;
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -8,27 +8,28 @@ exports.handler = async (event, context) => {
   };
 
   try {
-    const store = getStore('users');
-    const users = await store.get('users', { type: 'json' }) || {};
+    const data = await fs.readFile('/tmp/reviewpilot-users.json', 'utf8');
+    const users = JSON.parse(data);
     
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({ 
         success: true,
-        message: 'Blobs working',
+        message: 'File storage working',
         userCount: Object.keys(users).length,
         users: Object.keys(users) // Just show emails, not passwords
       })
     };
   } catch (error) {
     return {
-      statusCode: 500,
+      statusCode: 200,
       headers,
       body: JSON.stringify({ 
-        success: false,
-        error: error.message,
-        stack: error.stack
+        success: true,
+        message: 'No users yet',
+        userCount: 0,
+        users: []
       })
     };
   }

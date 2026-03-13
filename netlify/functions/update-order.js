@@ -1,4 +1,4 @@
-const { updateOrder } = require('./lib/storage');
+const { updateOrder } = require('./lib/storage-simple');
 
 exports.handler = async (event, context) => {
   const headers = {

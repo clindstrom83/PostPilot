@@ -1,5 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const { createOrder } = require('./lib/storage');
+const { createOrder } = require('./lib/storage-simple');
 
 exports.handler = async (event, context) => {
   const headers = {
