@@ -1,16 +1,15 @@
-// MVP: Client-side only auth - just generate a password and let them use the app
+const { getStore } = require('@netlify/blobs');
 const crypto = require('crypto');
 
-function generatePassword() {
-  const adjectives = ['Quick', 'Smart', 'Bold', 'Bright', 'Swift', 'Calm', 'Happy', 'Lucky'];
-  const nouns = ['Tiger', 'Eagle', 'River', 'Mountain', 'Ocean', 'Storm', 'Star', 'Moon'];
-  const adj = adjectives[Math.floor(Math.random() * adjectives.length)];
-  const noun = nouns[Math.floor(Math.random() * nouns.length)];
-  const num = Math.floor(Math.random() * 9999);
-  return `${adj}${noun}${num}`;
+const usersStore = () => getStore('users');
+const SESSION_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 days
+
+// Simple password hashing (production should use bcrypt)
+function hashPassword(password) {
+  return crypto.createHash('sha256').update(password).digest('hex');
 }
 
-exports.handler = async (event) => {
+exports.handler = async (event, context) => {
   const headers = {
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Headers': 'Content-Type',
@@ -31,64 +30,78 @@ exports.handler = async (event) => {
   }
 
   try {
-    const { email, businessName } = JSON.parse(event.body);
+    const { name, email, password } = JSON.parse(event.body);
 
-    // Validation
-    if (!email || !businessName) {
+    if (!name || !email || !password) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Email and business name are required' })
+        body: JSON.stringify({ error: 'Name, email, and password required' })
       };
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    if (password.length < 8) {
       return {
         statusCode: 400,
         headers,
-        body: JSON.stringify({ error: 'Invalid email address' })
+        body: JSON.stringify({ error: 'Password must be at least 8 characters' })
       };
     }
 
-    // For MVP: Just generate a password and return success
-    // No database - everything stored client-side
-    const generatedPassword = generatePassword();
-    const userId = crypto.randomUUID();
+    const emailLower = email.toLowerCase();
+    const store = usersStore();
+
+    // Check if user already exists
+    const existingUsers = await store.get('users', { type: 'json' }) || {};
+    
+    if (existingUsers[emailLower]) {
+      return {
+        statusCode: 400,
+        headers,
+        body: JSON.stringify({ error: 'Account with this email already exists' })
+      };
+    }
+
+    // Create new user
+    const userId = `user_${Date.now()}`;
+    const passwordHash = hashPassword(password);
     const sessionToken = crypto.randomBytes(32).toString('hex');
 
-    const user = {
+    existingUsers[emailLower] = {
       id: userId,
-      email: email.toLowerCase(),
-      businessName,
+      name: name,
+      email: emailLower,
+      passwordHash: passwordHash,
       createdAt: new Date().toISOString(),
-      subscription: {
-        status: 'trial',
-        plan: 'starter',
-        trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
-        postsGenerated: 0,
-        postsLimit: 50
+      sessions: {
+        [sessionToken]: {
+          expires: Date.now() + SESSION_EXPIRY,
+          createdAt: new Date().toISOString()
+        }
       }
     };
+
+    await store.setJSON('users', existingUsers);
 
     return {
       statusCode: 200,
       headers,
-      body: JSON.stringify({
+      body: JSON.stringify({ 
         success: true,
-        user,
-        session: sessionToken,
-        password: generatedPassword,
-        note: 'MVP: Auth is client-side only. Save your password!'
+        sessionToken: sessionToken,
+        user: {
+          id: userId,
+          name: name,
+          email: emailLower
+        }
       })
     };
-
-  } catch (err) {
-    console.error('Signup error:', err);
+  } catch (error) {
+    console.error('Signup error:', error);
     return {
       statusCode: 500,
       headers,
-      body: JSON.stringify({ error: 'Internal server error: ' + err.message })
+      body: JSON.stringify({ error: error.message })
     };
   }
 };

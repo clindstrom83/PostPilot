@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Your Plan | Custom Website Design | ReviewPilot</title>
+    <meta name="description" content="Get started with ReviewPilot. Choose from Starter ($297), Pro ($497), or Enterprise ($997) plans. Fast delivery, handmade design, domain & hosting included.">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="https://reviewpilot.business/signup.html">
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1e40af;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --gray: #64748b;
+            --light-gray: #f1f5f9;
+            --white: #ffffff;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .signup-container {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 50px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .logo h1 {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+        
+        .logo p {
+            color: var(--gray);
+            font-size: 16px;
+        }
+        
+        .plan-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+        
+        .plan-option {
+            flex: 1;
+            padding: 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+        
+        .plan-option:hover {
+            border-color: var(--primary);
+            background: var(--light-gray);
+        }
+        
+        .plan-option.active {
+            border-color: var(--primary);
+            background: #eff6ff;
+            border-width: 3px;
+        }
+        
+        .plan-option.popular {
+            position: relative;
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+        }
+        
+        .popular-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 900;
+            letter-spacing: 0.5px;
+        }
+        
+        .plan-name {
+            font-weight: 900;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .plan-price {
+            font-size: 14px;
+            color: var(--gray);
+        }
+        
+        .plan-setup {
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: var(--dark);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+        }
+        
+        .submit-button {
+            width: 100%;
+            background: var(--primary);
+            color: var(--white);
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 24px;
+        }
+        
+        .submit-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .submit-button:disabled {
+            background: var(--gray);
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .plan-details {
+            background: var(--light-gray);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+        }
+        
+        .plan-details h3 {
+            font-size: 20px;
+            font-weight: 900;
+            margin-bottom: 12px;
+        }
+        
+        .plan-details ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        
+        .plan-details li {
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--dark);
+        }
+        
+        .plan-details li::before {
+            content: "✓ ";
+            color: var(--accent);
+            font-weight: 900;
+            margin-right: 8px;
+        }
+        
+        .price-summary {
+            border-top: 2px solid #e2e8f0;
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+        
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 16px;
+        }
+        
+        .price-row.total {
+            font-weight: 900;
+            font-size: 20px;
+            color: var(--primary);
+            border-top: 2px solid #e2e8f0;
+            padding-top: 12px;
+            margin-top: 12px;
+        }
+        
+        .security-note {
+            text-align: center;
+            color: var(--gray);
+            font-size: 13px;
+            margin-top: 20px;
+        }
+        
+        .back-link {
+            text-align: center;
+            margin-top: 20px;
+        }
+        
+        .back-link a {
+            color: var(--gray);
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .back-link a:hover {
+            color: var(--primary);
+        }
+        
+        /* Trust Badges */
+        .trust-badges {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 32px;
+            padding-bottom: 32px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        
+        .trust-badge {
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray);
+        }
+        
+        .trust-badge-icon {
+            font-size: 24px;
+            margin-bottom: 6px;
+        }
+        
+        @media (max-width: 768px) {
+            .trust-badges {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 16px;
+            }
+            
+            .trust-badge {
+                font-size: 11px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 12px;
+            }
+            
+            .signup-container {
+                padding: 32px 20px;
+                border-radius: 16px;
+            }
+            
+            .logo h1 {
+                font-size: 28px;
+            }
+            
+            .logo p {
+                font-size: 15px;
+            }
+            
+            .plan-selector {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .plan-option {
+                padding: 18px;
+            }
+            
+            .plan-name {
+                font-size: 20px;
+            }
+            
+            .plan-price,
+            .plan-setup {
+                font-size: 15px;
+            }
+            
+            .form-input {
+                padding: 16px;
+                font-size: 16px;
+                border-radius: 12px;
+            }
+            
+            .submit-button {
+                padding: 18px;
+                font-size: 19px;
+                border-radius: 12px;
+            }
+            
+            .pricing-summary {
+                padding: 18px;
+                font-size: 15px;
+            }
+        }
+        
+        /* Small phones */
+        @media (max-width: 400px) {
+            .signup-container {
+                padding: 24px 16px;
+            }
+            
+            .logo h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="signup-container">
+        <div class="logo">
+            <h1>ReviewPilot</h1>
+            <p>Choose Your Plan</p>
+        </div>
+        
+        <!-- Trust Badges -->
+        <div class="trust-badges">
+            <div class="trust-badge">
+                <div class="trust-badge-icon">🔒</div>
+                <div>Secure Checkout</div>
+            </div>
+            <div class="trust-badge">
+                <div class="trust-badge-icon">⚡</div>
+                <div>Fast Delivery</div>
+            </div>
+            <div class="trust-badge">
+                <div class="trust-badge-icon">💳</div>
+                <div>Cancel Anytime</div>
+            </div>
+            <div class="trust-badge">
+                <div class="trust-badge-icon">✅</div>
+                <div>Money-Back</div>
+            </div>
+        </div>
+        
+        <!-- Plan Selector -->
+        <div class="plan-selector">
+            <div class="plan-option active" data-plan="starter">
+                <div class="plan-name">Starter</div>
+                <div class="plan-setup">$297</div>
+                <div class="plan-price">+ $39/mo</div>
+            </div>
+            <div class="plan-option popular" data-plan="pro">
+                <div class="popular-badge">MOST POPULAR</div>
+                <div class="plan-name">Pro</div>
+                <div class="plan-setup">$497</div>
+                <div class="plan-price">+ $49/mo</div>
+            </div>
+            <div class="plan-option" data-plan="enterprise">
+                <div class="plan-name">Enterprise</div>
+                <div class="plan-setup">$997</div>
+                <div class="plan-price">+ $99/mo</div>
+            </div>
+        </div>
+        
+        <!-- Plan Details -->
+        <div class="plan-details" id="plan-details">
+            <!-- Dynamically updated -->
+        </div>
+        
+        <!-- Signup Form -->
+        <form id="signup-form">
+            <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input type="text" class="form-input" name="name" required>
+            </div>
+            
+            <div class="form-group">
+                <label class="form-label">Email Address</label>
+                <input type="email" class="form-input" name="email" required>
+            </div>
+            
+            <!-- Price Summary -->
+            <div class="price-summary">
+                <div class="price-row">
+                    <span>One-time setup:</span>
+                    <span id="setup-price">$297</span>
+                </div>
+                <div class="price-row">
+                    <span>Monthly subscription:</span>
+                    <span id="monthly-price">$39/month</span>
+                </div>
+                <div class="price-row total">
+                    <span>Due today:</span>
+                    <span id="total-price">$336</span>
+                </div>
+            </div>
+            
+            <button type="submit" class="submit-button" id="checkout-button">
+                Proceed to Secure Checkout →
+            </button>
+        </form>
+        
+        <p class="security-note">🔒 Secure payment powered by Stripe. Your card info is never stored on our servers.</p>
+        
+        <div class="back-link">
+            <a href="/index.html">← Back to pricing</a>
+        </div>
+    </div>
+    
+    <script>
+        // Check if user is logged in
+        const session = localStorage.getItem('reviewpilot_session');
+        if (!session) {
+            // Not logged in - redirect to signup
+            window.location.href = '/signup.html';
+        }
+        
+        const plans = {
+            starter: {
+                name: 'Starter',
+                setup: 29700, // cents
+                monthly: 3900, // cents
+                features: [
+                    '⏱️ 72-hour delivery',
+                    'Up to 5 pages',
+                    'Mobile responsive',
+                    '1 update per month',
+                    'Hosting & SSL included',
+                    'We register your domain (free)',
+                    '48-hour email support'
+                ]
+            },
+            pro: {
+                name: 'Pro',
+                setup: 49700,
+                monthly: 4900,
+                features: [
+                    '⚡ 48-hour delivery',
+                    'Up to 10 pages',
+                    '4 updates per month',
+                    'E-commerce (50 products)',
+                    'Booking system',
+                    'Blog setup',
+                    'We register your domain (free)',
+                    '24-hour email support'
+                ]
+            },
+            enterprise: {
+                name: 'Enterprise',
+                setup: 99700,
+                monthly: 9900,
+                features: [
+                    '🚀 24-hour express • Skip the queue',
+                    'UNLIMITED pages',
+                    'UNLIMITED updates',
+                    'Advanced e-commerce',
+                    'Custom features',
+                    'We register your domain (free)',
+                    'Dedicated account manager',
+                    '12-hour support'
+                ]
+            }
+        };
+        
+        let selectedPlan = 'starter';
+        
+        // Plan selection
+        document.querySelectorAll('.plan-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.plan-option').forEach(o => o.classList.remove('active'));
+                option.classList.add('active');
+                selectedPlan = option.dataset.plan;
+                updatePlanDetails();
+            });
+        });
+        
+        function updatePlanDetails() {
+            const plan = plans[selectedPlan];
+            const setupDollars = (plan.setup / 100).toFixed(2);
+            const monthlyDollars = (plan.monthly / 100).toFixed(2);
+            const totalDollars = ((plan.setup + plan.monthly) / 100).toFixed(2);
+            
+            document.getElementById('plan-details').innerHTML = `
+                <h3>${plan.name} Plan</h3>
+                <ul>
+                    ${plan.features.map(f => `<li>${f}</li>`).join('')}
+                </ul>
+            `;
+            
+            document.getElementById('setup-price').textContent = `$${setupDollars}`;
+            document.getElementById('monthly-price').textContent = `$${monthlyDollars}/month`;
+            document.getElementById('total-price').textContent = `$${totalDollars}`;
+        }
+        
+        updatePlanDetails();
+        
+        // Form submission
+        const stripe = Stripe('pk_live_51T2TNuRztedIDFZC91nxvR2WyOYe3XSMCVKMrc9JzYjBX9EVR45bGvFWnRnwuIXQfyR6rH1rGsaOKay4l0c616DZ00hHhnSGwk');
+        
+        document.getElementById('signup-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const button = document.getElementById('checkout-button');
+            button.disabled = true;
+            button.textContent = 'Processing...';
+            
+            const formData = new FormData(e.target);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const plan = plans[selectedPlan];
+            
+            try {
+                // Create Stripe checkout session
+                const response = await fetch('/.netlify/functions/create-checkout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        plan: selectedPlan,
+                        name,
+                        email,
+                        setupAmount: plan.setup,
+                        monthlyAmount: plan.monthly
+                    })
+                });
+                
+                const session = await response.json();
+                
+                if (session.error) {
+                    throw new Error(session.error);
+                }
+                
+                // Redirect to Stripe Checkout
+                const result = await stripe.redirectToCheckout({
+                    sessionId: session.id
+                });
+                
+                if (result.error) {
+                    throw new Error(result.error.message);
+                }
+            } catch (error) {
+                alert('Payment error: ' + error.message);
+                button.disabled = false;
+                button.textContent = 'Proceed to Secure Checkout →';
+            }
+        });
+    </script>
+</body>
+</html>
