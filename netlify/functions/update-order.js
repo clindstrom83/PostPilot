@@ -1,19 +1,4 @@
-const fs = require('fs').promises;
-
-const ORDERS_FILE = '/tmp/orders.json';
-
-async function loadOrders() {
-  try {
-    const data = await fs.readFile(ORDERS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
-}
-
-async function saveOrders(orders) {
-  await fs.writeFile(ORDERS_FILE, JSON.stringify(orders, null, 2));
-}
+const { updateOrder } = require('./lib/storage');
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -46,13 +31,14 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Load orders
-    const orders = await loadOrders();
-    
-    // Find and update order
-    const orderIndex = orders.findIndex(o => o.id === orderId);
-    
-    if (orderIndex === -1) {
+    // Update order
+    const updatedOrder = await updateOrder(orderId, {
+      status,
+      previewUrl: previewUrl || undefined,
+      websiteUrl: websiteUrl || undefined
+    });
+
+    if (!updatedOrder) {
       return {
         statusCode: 404,
         headers,
@@ -60,24 +46,12 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Update order
-    orders[orderIndex] = {
-      ...orders[orderIndex],
-      status,
-      previewUrl: previewUrl || orders[orderIndex].previewUrl,
-      websiteUrl: websiteUrl || orders[orderIndex].websiteUrl,
-      updatedAt: new Date().toISOString()
-    };
-
-    // Save orders
-    await saveOrders(orders);
-
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify({ 
         success: true,
-        order: orders[orderIndex]
+        order: updatedOrder
       })
     };
   } catch (error) {

@@ -1,15 +1,4 @@
-const fs = require('fs').promises;
-
-const ORDERS_FILE = '/tmp/orders.json';
-
-async function loadOrders() {
-  try {
-    const data = await fs.readFile(ORDERS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
-}
+const { getOrdersByEmail } = require('./lib/storage');
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -42,10 +31,7 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const orders = await loadOrders();
-    const customerOrders = orders.filter(order => 
-      order.customerEmail?.toLowerCase() === email.toLowerCase()
-    );
+    const customerOrders = await getOrdersByEmail(email);
 
     if (customerOrders.length === 0) {
       return {

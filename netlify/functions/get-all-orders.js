@@ -1,15 +1,4 @@
-const fs = require('fs').promises;
-
-const ORDERS_FILE = '/tmp/orders.json';
-
-async function loadOrders() {
-  try {
-    const data = await fs.readFile(ORDERS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
-}
+const { loadOrders } = require('./lib/storage');
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -38,8 +27,8 @@ exports.handler = async (event, context) => {
       statusCode: 200,
       headers,
       body: JSON.stringify({ 
-        orders,
-        count: orders.length
+        orders: orders,
+        total: orders.length
       })
     };
   } catch (error) {

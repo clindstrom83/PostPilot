@@ -1,22 +1,5 @@
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
-const fs = require('fs').promises;
-const path = require('path');
-
-// Simple file-based storage for MVP (will migrate to proper DB later)
-const ORDERS_FILE = '/tmp/orders.json';
-
-async function loadOrders() {
-  try {
-    const data = await fs.readFile(ORDERS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return [];
-  }
-}
-
-async function saveOrders(orders) {
-  await fs.writeFile(ORDERS_FILE, JSON.stringify(orders, null, 2));
-}
+const { createOrder } = require('./lib/storage');
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -62,9 +45,6 @@ exports.handler = async (event, context) => {
       };
     }
 
-    // Load existing orders
-    const orders = await loadOrders();
-
     // Handle customer ID (might be string or object depending on expand)
     const customerId = typeof session.customer === 'string' 
       ? session.customer 
@@ -74,26 +54,22 @@ exports.handler = async (event, context) => {
       || (typeof session.customer === 'object' ? session.customer.email : null);
 
     // Create new order
-    const order = {
-      id: `order_${Date.now()}`,
+    const order = await createOrder({
       customerId: customerId,
       customerEmail: customerEmail,
       customerName: session.metadata?.customer_name || 'Customer',
       plan: session.metadata?.plan || 'starter',
-      status: 'pending', // pending, in_progress, preview_ready, live
+      status: 'pending',
       websiteUrl: null,
       previewUrl: null,
       deliveryTime: getDeliveryTime(session.metadata?.plan),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
       stripeSessionId: sessionId,
-      stripeSubscriptionId: session.subscription?.id,
+      stripeSubscriptionId: typeof session.subscription === 'string' 
+        ? session.subscription 
+        : session.subscription?.id,
       setupAmount: session.metadata?.setup_amount,
       monthlyAmount: session.metadata?.monthly_amount
-    };
-
-    orders.push(order);
-    await saveOrders(orders);
+    });
 
     return {
       statusCode: 200,

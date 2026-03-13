@@ -1,19 +1,6 @@
-const fs = require('fs').promises;
+const { verifyToken, deleteToken, createToken } = require('./lib/storage');
 
-const TOKENS_FILE = '/tmp/login-tokens.json';
-
-async function loadTokens() {
-  try {
-    const data = await fs.readFile(TOKENS_FILE, 'utf8');
-    return JSON.parse(data);
-  } catch (error) {
-    return {};
-  }
-}
-
-async function saveTokens(tokens) {
-  await fs.writeFile(TOKENS_FILE, JSON.stringify(tokens, null, 2));
-}
+const SESSION_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 days
 
 exports.handler = async (event, context) => {
   const headers = {
@@ -46,45 +33,22 @@ exports.handler = async (event, context) => {
       };
     }
 
-    const tokens = await loadTokens();
-    const tokenData = tokens[token];
+    const tokenData = await verifyToken(token);
 
     if (!tokenData) {
       return {
         statusCode: 401,
         headers,
-        body: JSON.stringify({ error: 'Invalid token' })
-      };
-    }
-
-    // Check if expired
-    if (tokenData.expires < Date.now()) {
-      delete tokens[token];
-      await saveTokens(tokens);
-      return {
-        statusCode: 401,
-        headers,
-        body: JSON.stringify({ error: 'Token expired' })
+        body: JSON.stringify({ error: 'Invalid or expired token' })
       };
     }
 
     // Token is valid - delete it (one-time use)
     const email = tokenData.email;
-    delete tokens[token];
-    await saveTokens(tokens);
+    await deleteToken(token);
 
     // Create session token (lasts longer)
-    const sessionToken = require('crypto').randomBytes(32).toString('hex');
-    const SESSION_EXPIRY = 30 * 24 * 60 * 60 * 1000; // 30 days
-
-    tokens[sessionToken] = {
-      email: email,
-      expires: Date.now() + SESSION_EXPIRY,
-      type: 'session',
-      createdAt: new Date().toISOString()
-    };
-
-    await saveTokens(tokens);
+    const sessionToken = await createToken(email, SESSION_EXPIRY);
 
     return {
       statusCode: 200,
