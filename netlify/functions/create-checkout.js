@@ -41,17 +41,6 @@ exports.handler = async (event, context) => {
           price_data: {
             currency: 'usd',
             product_data: {
-              name: `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan - Setup Fee`,
-              description: 'One-time website build fee'
-            },
-            unit_amount: setupAmount,
-          },
-          quantity: 1,
-        },
-        {
-          price_data: {
-            currency: 'usd',
-            product_data: {
               name: `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan - Monthly`,
               description: 'Hosting, updates, and maintenance'
             },
@@ -59,6 +48,25 @@ exports.handler = async (event, context) => {
             recurring: {
               interval: 'month',
             },
+          },
+          quantity: 1,
+        },
+      ],
+      subscription_data: {
+        metadata: {
+          plan,
+          customer_name: name,
+        }
+      },
+      invoice_items: [
+        {
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: `${plan.charAt(0).toUpperCase() + plan.slice(1)} Plan - Setup Fee`,
+              description: 'One-time website build fee'
+            },
+            unit_amount: setupAmount,
           },
           quantity: 1,
         },
