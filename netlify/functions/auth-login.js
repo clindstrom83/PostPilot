@@ -47,7 +47,11 @@ exports.handler = async (event, context) => {
     return {
       statusCode: 401,
       headers,
-      body: JSON.stringify({ error: error.message })
+      body: JSON.stringify({ 
+        error: error.message,
+        details: error.stack,
+        debug: 'Check Netlify function logs for more info'
+      })
     };
   }
 };
