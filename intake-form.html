@@ -745,9 +745,12 @@
                     });
                     
                     if (!orderResponse.ok) {
-                        console.error('Failed to create order');
+                        const errorData = await orderResponse.json();
+                        alert(`⚠️ Order tracking setup failed: ${errorData.error || 'Unknown error'}. Don't worry - your payment went through. We'll contact you directly.`);
+                        console.error('Failed to create order:', errorData);
                     }
                 } catch (error) {
+                    alert(`⚠️ Order tracking setup failed: ${error.message}. Don't worry - your payment went through. We'll contact you directly.`);
                     console.error('Order creation error:', error);
                 }
             }

@@ -65,11 +65,19 @@ exports.handler = async (event, context) => {
     // Load existing orders
     const orders = await loadOrders();
 
+    // Handle customer ID (might be string or object depending on expand)
+    const customerId = typeof session.customer === 'string' 
+      ? session.customer 
+      : session.customer?.id;
+    
+    const customerEmail = session.customer_email 
+      || (typeof session.customer === 'object' ? session.customer.email : null);
+
     // Create new order
     const order = {
       id: `order_${Date.now()}`,
-      customerId: session.customer.id,
-      customerEmail: session.customer_email || session.customer.email,
+      customerId: customerId,
+      customerEmail: customerEmail,
       customerName: session.metadata?.customer_name || 'Customer',
       plan: session.metadata?.plan || 'starter',
       status: 'pending', // pending, in_progress, preview_ready, live

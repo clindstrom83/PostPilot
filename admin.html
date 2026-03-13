@@ -358,21 +358,41 @@
     </div>
 
     <script>
-        const ADMIN_PASSWORD = 'Carson79';
         let orders = [];
 
         // Login handling
-        document.getElementById('loginForm').addEventListener('submit', (e) => {
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             const password = document.getElementById('passwordInput').value;
+            const button = e.target.querySelector('button');
+            const originalText = button.textContent;
             
-            if (password === ADMIN_PASSWORD) {
-                localStorage.setItem('reviewpilot_admin', 'true');
-                document.getElementById('loginScreen').style.display = 'none';
-                document.getElementById('adminPanel').style.display = 'block';
-                loadOrders();
-            } else {
-                alert('Incorrect password');
+            button.disabled = true;
+            button.textContent = 'Checking...';
+            
+            try {
+                const response = await fetch('/.netlify/functions/admin-auth', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    localStorage.setItem('reviewpilot_admin', data.token);
+                    document.getElementById('loginScreen').style.display = 'none';
+                    document.getElementById('adminPanel').style.display = 'block';
+                    loadOrders();
+                } else {
+                    alert('Incorrect password');
+                    button.disabled = false;
+                    button.textContent = originalText;
+                }
+            } catch (error) {
+                alert('Login error: ' + error.message);
+                button.disabled = false;
+                button.textContent = originalText;
             }
         });
 
